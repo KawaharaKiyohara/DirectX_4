@@ -166,14 +166,10 @@ namespace tkEngine2 {
 	}
 	void CEngine::Update()
 	{
-		CStopwatch sw;
-		sw.Start();
 		CGameObjectManager& goMgr = GameObjectManager();
 		goMgr.Execute(m_renderContext);
 
 		m_pSwapChain->Present(0, 0);
-		sw.Stop();
-		Log("1Frame time = %lf\n", sw.GetElapsed());
 	}
 	LRESULT CALLBACK CEngine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
