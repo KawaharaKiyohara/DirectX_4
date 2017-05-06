@@ -3,7 +3,7 @@
  */
 
 
-#define NUM_THREAD 16
+
 //入力テクスチャ。
 Texture2D inTexture : register( t0 );
 //出力テクスチャ。
@@ -22,16 +22,19 @@ uint PackedFloat4ToRGBA32( float4 In )
 /*!
  * @brief	メイン関数。
  */
-[numthreads(NUM_THREAD, NUM_THREAD, 1)]
+[numthreads(16, 16, 1)]
 void CSMain( uint3 DTid : SV_DispatchThreadID)
 {
 	float4 color = inTexture.Load(uint3( DTid.x, DTid.y, 0));
-	float Y = 0.29900 * color.r + 0.58700 * color.g + 0.11400 * color.b;
-	color.r = Y;
-	color.g = Y;
-	color.b = Y;
+//	for(int i = 0; i < 1000; i++){
+	float Cb = -0.2f;
+	float Cr = 0.1f;
+	float Y = 0.299f * color.r + 0.587f * color.g + 0.114f * color.b;
+	color.r = Y + 1.402f * Cr;
+	color.g = Y - 0.34414f * Cb - 0.71414f * Cr;
+	color.b = Y + 1.772f * Cb;
 	color.a = 1.0f;
-
+//	}
 	//float4をRGBA32フォーマットに変換。
 	//画像の縦幅は512で固定。
 	outputBuffer[DTid.x + DTid.y * 512] = PackedFloat4ToRGBA32(color);
