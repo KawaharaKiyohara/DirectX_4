@@ -1,72 +1,104 @@
 /*!
- *@brief	DirectX11テクスチャ貼り付けチュートリアル。
+ *@brief	テクスチャコンバート
  */
 #include "stdafx.h"
 #include "tkEngine2/tkEnginePreCompile.h"
 #include "tkEngine2/tkEngine.h"
+#include "tkEngine2/timer/tkStopwatch.h"
 
 using namespace tkEngine2;
 
-class CTriangleDraw : public IGameObject {
-	//定数バッファ。
-	struct SConstantBuffer {
-		CVector4 color;
-	};
-	CShader m_vsShader;					//VSシェーダー。
-	CShader m_psShader;					//PSシェーダー。
-	CVertexBuffer m_vertexBuffer;		//頂点バッファ。
-	CConstantBuffer	m_constantBuffer;	//定数バッファ。
-	CTextureData m_textureData;			//テクスチャデータ。
-	CShaderResourceView m_textureSRV;	//テクスチャSRV。
-	CSamplerState m_samplerState;		//サンプラステート。
+struct SColor {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char a;
+};
 
-	struct SSimpleVertex {
-		CVector4 pos;
-		float uv[2];
-	};
+#define USE_GPU		//定義でテクスチャコンバートをGPUで行う。
+/////////////////////////////////////////////////////////////////////////
+//GPUでテクスチャコンバートを行う。
+/////////////////////////////////////////////////////////////////////////
+class CTexConvertGPU : public IGameObject {
+	CTextureData m_textureData;			//テクスチャデータ。
+	CShader m_csShader;
+	CShaderResourceView m_textureSRV;	//シェーダーリソースビュー。
+	CStructuredBuffer m_outputBuffer;
+	CStructuredBuffer m_outputBufferCPU;
+	CUnorderedAccessView m_outputBufferUAV;
+public:
+	bool Start() override
+	{
+		//テクスチャをロード。
+		m_textureData.Load(L"original.jpg");
+		m_textureSRV.Create(m_textureData);
+
+		//出力バッファを作成。
+		{
+			const DirectX::TexMetadata& texMetadata = m_textureData.GetMetadata();
+			D3D11_BUFFER_DESC desc;
+			ZeroMemory(&desc, sizeof(desc));
+			desc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;	//UAVとしてバインド可能。
+			desc.ByteWidth = texMetadata.width * texMetadata.height * sizeof(SColor);		//バッファのサイズ。
+			desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+			desc.StructureByteStride = sizeof(SColor);	//一要素のサイズ。
+			m_outputBuffer.Create(m_textureData.GetImage(0, 0, 0)->pixels, desc);
+			m_outputBufferUAV.Create(m_outputBuffer);
+
+			//CPUからアクセスできるバッファを作成。
+			desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;	//CPUから読み込み可能に設定する。
+			m_outputBufferCPU.Create(m_textureData.GetImage(0, 0, 0)->pixels, desc);
+		}
+
+		//シェーダーをロード。
+		m_csShader.Load("Assets/shader/monocromeCS.fx", "CSMain", CShader::EnType::CS);
+		return true;
+	}
+	void Update() override
+	{
+
+	}
+	void Render(CRenderContext& renderContext) override
+	{
+		CStopwatch sw;
+		sw.Start();
+		
+		renderContext.CSSetShader(m_csShader);
+		renderContext.CSSetShaderResource(0, m_textureSRV);
+		renderContext.CSSetUnorderedAccessView(0, m_outputBufferUAV);
+		//コンピュートシェーダーを実行。
+		const int NUM_THREAD = 16;
+		const DirectX::TexMetadata& texMetadata = m_textureData.GetMetadata();
+		renderContext.Dispatch(texMetadata.width/ NUM_THREAD, texMetadata.height/ NUM_THREAD, 1);	
+		//VRAMからメインメモリにコピー。
+		renderContext.CopyResource(m_outputBufferCPU, m_outputBuffer);
+
+		//マップ。
+		CMapper<CStructuredBuffer> mapper(renderContext, m_outputBufferCPU);
+		SColor* color = (SColor*)mapper.GetData();
+		const DirectX::Image* image = m_textureData.GetImage(0, 0, 0);
+		memcpy(image->pixels, color, sizeof(SColor)*image->width*image->height);
+
+		//保存。
+		m_textureData.Save(L"GenerateGPU.jpg", 0, 0, 0);
+		
+		sw.Stop();
+		char text[256];
+		sprintf(text, "処理時間 %fミリ秒\n", sw.GetElapsedMillisecond());
+		MessageBox(NULL, text, "結果", MB_OK);
+		DeleteGO(this);
+	}
+};
+/////////////////////////////////////////////////////////////////////////
+//CPUでテクスチャコンバートを行う。
+/////////////////////////////////////////////////////////////////////////
+class CTexConvertCPU : public IGameObject {
+	CTextureData m_textureData;			//テクスチャデータ。
 	public:
 		bool Start() override
 		{
-			//頂点シェーダーをロード。
-			m_vsShader.Load("Assets/shader/Tutorial.fx", "VS", CShader::EnType::VS);
-			//ピクセルシェーダーをロード。
-			m_psShader.Load("Assets/shader/Tutorial.fx", "PS", CShader::EnType::PS);
-			//テクスチャをファイルから作成。
-			m_textureData.Load(L"Assets/seafloor.dds");
-			//テクスチャSRVを作成。
-			m_textureSRV.Create(m_textureData);
-
-			D3D11_SAMPLER_DESC desc;
-			ZeroMemory(&desc, sizeof(desc));
-			desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-			desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-			desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-			desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-			desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-			desc.MinLOD = 0;
-			desc.MaxLOD = D3D11_FLOAT32_MAX;
-			m_samplerState.Create(desc);
-
-			//頂点バッファのソースデータ。
-			SSimpleVertex vertices[] =
-			{
-				{
-					CVector4(0.0f, 0.5f, 0.5f, 1.0f),
-					0.0f, 0.0f
-				},
-				{
-					CVector4(0.5f, -0.5f, 0.5f, 1.0f),
-					1.0f, 0.0f
-				},
-				{
-					CVector4(-0.5f, -0.5f, 0.5f, 1.0f),
-					1.0f, 1.0f
-				}
-			};
-			//頂点バッファを作成。
-			m_vertexBuffer.Create(3, sizeof(SSimpleVertex), vertices);
-			//定数バッファを作る。
-			m_constantBuffer.Create(NULL, sizeof(SConstantBuffer));
+			//テクスチャをロード。
+			m_textureData.Load(L"original.jpg");
 			return true;
 		}
 		void Update() override
@@ -74,31 +106,28 @@ class CTriangleDraw : public IGameObject {
 		
 		}
 		void Render(CRenderContext& renderContext) override
-		 {
-			//頂点バッファを設定。
-			renderContext.IASetVertexBuffer(m_vertexBuffer);
-			//プリミティブのトポロジーを設定。
-			renderContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			//頂点シェーダーを設定。
-			renderContext.VSSetShader(m_vsShader);
-			//ピクセルシェーダーを設定。
-			renderContext.PSSetShader(m_psShader);
-			//入力レイアウトを設定。
-			renderContext.IASetInputLayout(m_vsShader.GetInputLayout());
-			//定数バッファの設定。
-			SConstantBuffer cb;
-			cb.color.x = 1.0f;
-			cb.color.y = 0.0f;
-			cb.color.z = 0.0f;
-			cb.color.w = 1.0f;
-			//VRAM上の定数バッファの内容を更新。
-			renderContext.UpdateSubresource(m_constantBuffer, cb);
-			//定数バッファをPSステージに設定。
-			renderContext.PSSetShaderResource(0, m_textureSRV);
-			renderContext.PSSetConstantBuffer(0, m_constantBuffer);
-			renderContext.PSSetSampler(0, m_samplerState);
-			//描画。
-			renderContext.Draw(3, 0);
+		{
+			CStopwatch sw;
+			sw.Start();
+			
+			//白黒化。
+			const DirectX::Image* image = m_textureData.GetImage(0, 0, 0);
+			
+			SColor* color = (SColor*)image->pixels;
+			for (int i = 0; i < image->width * image->height; i++) {
+				unsigned char Y = (unsigned char)(0.29900 * color[i].r + 0.58700 * color[i].g + 0.11400 * color[i].b);
+				color[i].r = Y;
+				color[i].g = Y;
+				color[i].b = Y;
+				color[i].a = 255;
+			}
+			m_textureData.Save(L"GenerateCPU.jpg", 0, 0, 0);
+			
+			sw.Stop();
+			char text[256];
+			sprintf(text, "処理時間 %fミリ秒\n", sw.GetElapsedMillisecond());
+			MessageBox(NULL, text, "結果", MB_OK);
+			DeleteGO(this);
 		}
 };
 
@@ -119,7 +148,11 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
 	initParam.frameBufferHeight = 720;
 	//エンジンを初期化。
 	if (Engine().Init(initParam) == true) {
-		NewGO<CTriangleDraw>(0);
+#ifdef USE_GPU
+		NewGO<CTexConvertGPU>(0);
+#else
+		NewGO<CTexConvertCPU>(0);
+#endif
 		//初期化に成功。
 		//ゲームループを実行。
 		Engine().RunGameLoop();

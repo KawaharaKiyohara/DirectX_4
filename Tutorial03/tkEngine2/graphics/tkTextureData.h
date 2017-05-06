@@ -22,7 +22,18 @@ namespace tkEngine2{
 		 */
 		bool Load(const LPCWSTR fileName);
 		/*!
-		*@brief	画像イメージを取得。
+		*@brief	テクスチャを保存。
+		*/
+		bool Save(const LPCWSTR fileName, size_t mip, size_t item, size_t slice);
+		/*!
+		*@brief	ビットマップイメージを取得。
+		*/
+		const DirectX::Image* GetImage(size_t mip, size_t item, size_t slice) const
+		{
+			return m_scratchImage.GetImage(mip, item, slice);
+		}
+		/*!
+		*@brief	ビットマップイメージを取得。
 		*/
 		const DirectX::Image* GetImages() const
 		{

@@ -8,6 +8,7 @@
 #include "tkEngine2/graphics/tkShader.h"
 #include "tkEngine2/graphics/GPUBuffer/tkVertexBuffer.h"
 #include "tkEngine2/graphics/GPUBuffer/tkConstantBuffer.h"
+#include "tkEngine2/graphics/GPUBuffer/tkStructuredBuffer.h"
 #include "tkEngine2/graphics/GPUView/tkShaderResourceView.h"
 #include "tkEngine2/graphics/GPUView/tkUnorderedAccessView.h"
 #include "tkEngine2/graphics/tkSamplerState.h"
@@ -203,7 +204,7 @@ namespace tkEngine2{
 		template<class TResource>
 		void CopyResource(TResource& destRes, TResource& srcRes)
 		{
-			if (buffer.GetBody() != nullptr
+			if (destRes.GetBody() != nullptr
 				&& srcRes.GetBody() != nullptr
 			) {
 				m_pD3DDeviceContext->CopyResource(destRes.GetBody(), srcRes.GetBody());

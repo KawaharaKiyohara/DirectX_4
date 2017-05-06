@@ -32,6 +32,8 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <wincodec.h>
+#include <wincodecsdk.h>
 #include "DirectXTex/DirectXTex.h"
 #include "tkEngine2/policy/tkNoncopyable.h"
 #include "tkEngine2/policy/tkScopedResource.h"
