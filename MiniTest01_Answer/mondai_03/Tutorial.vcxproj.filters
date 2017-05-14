@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns:atg="http://atg.xbox.com" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{8e114980-c1a3-4ada-ad7c-83caadf5daeb}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="DXUT">
+      <UniqueIdentifier>{a43c5c25-0e86-4a20-b64a-883785ff74fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2">
+      <UniqueIdentifier>{3f6eda5c-91eb-4bcb-8c8e-d4451da1920f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\debug">
+      <UniqueIdentifier>{4d081ba9-e7f7-4c88-be6f-7b23fce80cb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\gameObject">
+      <UniqueIdentifier>{da74eeff-2593-47bf-90f6-a2d1f5231ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\math">
+      <UniqueIdentifier>{50146b6d-d386-40c6-9c67-66b94f300dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\policy">
+      <UniqueIdentifier>{a080a333-0b3d-49c2-be4a-a0165758a89a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\util">
+      <UniqueIdentifier>{940602d0-43e8-40af-8f7b-9c65c3cc8194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\graphics">
+      <UniqueIdentifier>{33204174-8e86-4a59-9199-649c4d264479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\graphics\GPUView">
+      <UniqueIdentifier>{d73e5ec2-229e-42dc-887f-1bf7c7cac7d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\graphics\GPUBuffer">
+      <UniqueIdentifier>{cd825c4d-dcaf-4896-9efd-ce5afc90016d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tkEngine2\timer">
+      <UniqueIdentifier>{62ff5b6a-645c-4701-a8f0-9a8444141987}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tkEngine2\tkEngine.cpp">
+      <Filter>tkEngine2</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\tkEnginePreCompile.cpp">
+      <Filter>tkEngine2</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\gameObject\tkTransform.cpp">
+      <Filter>tkEngine2\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\gameObject\tkGameObject.cpp">
+      <Filter>tkEngine2\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\gameObject\tkgameobjectmanager.cpp">
+      <Filter>tkEngine2\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\math\tkVector.cpp">
+      <Filter>tkEngine2\math</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\math\tkAabb.cpp">
+      <Filter>tkEngine2\math</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\math\tkMath.cpp">
+      <Filter>tkEngine2\math</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\math\tkMatrix.cpp">
+      <Filter>tkEngine2\math</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\tkRenderContext.cpp">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\tkShader.cpp">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\GPUView\tkUnorderedAccessView.cpp">
+      <Filter>tkEngine2\graphics\GPUView</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\GPUView\tkShaderResourceView.cpp">
+      <Filter>tkEngine2\graphics\GPUView</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\GPUBuffer\tkVertexBuffer.cpp">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\GPUBuffer\tkConstantBuffer.cpp">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\GPUBuffer\tkStructuredBuffer.cpp">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="tkEngine2\graphics\GPUBuffer\tkGPUBuffer.cpp">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\tkTextureData.cpp">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\tkSamplerState.cpp">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tkEngine2\tkEngine.h">
+      <Filter>tkEngine2</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\tkEnginePreCompile.h">
+      <Filter>tkEngine2</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\debug\tkLog.h">
+      <Filter>tkEngine2\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\debug\tkAssert.h">
+      <Filter>tkEngine2\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\gameObject\tkTransform.h">
+      <Filter>tkEngine2\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\gameObject\tkgameobject.h">
+      <Filter>tkEngine2\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\gameObject\tkGameObjectManager.h">
+      <Filter>tkEngine2\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\math\tkMatrix.h">
+      <Filter>tkEngine2\math</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\math\tkvector.h">
+      <Filter>tkEngine2\math</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\math\tkAabb.h">
+      <Filter>tkEngine2\math</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\math\tkMath.h">
+      <Filter>tkEngine2\math</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\policy\tkNoncopyable.h">
+      <Filter>tkEngine2\policy</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\util\tkUtil.h">
+      <Filter>tkEngine2\util</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\util\tkNameKey.h">
+      <Filter>tkEngine2\util</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkRenderContext.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkShader.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\GPUView\tkShaderResourceView.h">
+      <Filter>tkEngine2\graphics\GPUView</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\GPUView\tkUnorderedAccessView.h">
+      <Filter>tkEngine2\graphics\GPUView</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\GPUBuffer\tkStructuredBuffer.h">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\GPUBuffer\tkVertexBuffer.h">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\GPUBuffer\tkConstantBuffer.h">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkMapper.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\timer\tkStopwatch.h">
+      <Filter>tkEngine2\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\GPUBuffer\tkGPUBuffer.h">
+      <Filter>tkEngine2\graphics\GPUBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkTextureData.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkSamplerState.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CLInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </CLInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tutorial.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
