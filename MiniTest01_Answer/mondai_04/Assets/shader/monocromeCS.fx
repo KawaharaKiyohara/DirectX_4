@@ -19,6 +19,10 @@ uint PackedFloat4ToRGBA32( float4 In )
 			| (uint)(In.g * 255) << 8 
 			| (uint)(In.r * 255);
 }
+float4 tex2D(uint2 uv)
+{
+	return inTexture.Load(uint3( uv.x, uv.y, 0));
+}
 float4 FxaaPixelShader( 
 	uint3 pos, 
     float4 fxaaConsoleRcpFrameOpt,
@@ -30,19 +34,24 @@ float4 FxaaPixelShader(
     float fxaaConsoleEdgeThresholdMin
 )
 {
+	//② ここで指定しているのは自身のテクセルと、
+	//   隣のテクセルとの加重和をフェッチするためのもの。
+	//   なのでコンピュートシェーダーでは1テクセル隣をフェッチして
+	//   49行目からのフェッチで加重和を取っている。
 	//近傍4テクセルをフェッチ。
-	uinr4 nTex = float4( 
+	uint4 nTex = float4( 
 		pos.x + 1, 
 		pos.y + 1,
-		pos.x - -1, 
-		pos.y - -1
+		pos.x - 1, 
+		pos.y - 1
 	);
-	float lumaNw = tex2D(SceneSampler, nTex.xy).y;
-	float lumaSw = tex2D(SceneSampler, nTex.xw).y;
-	float lumaNe = tex2D(SceneSampler, nTex.zy).y;
-	float lumaSe = tex2D(SceneSampler, nTex.zw).y;
+	float4 rgbyM = tex2D(pos.xy);
+	float lumaNw = (tex2D(nTex.xy).y + rgbyM.y) * 0.5f;
+	float lumaSw = (tex2D(nTex.xw).y + rgbyM.y) * 0.5f;
+	float lumaNe = (tex2D(nTex.zy).y + rgbyM.y) * 0.5f;
+	float lumaSe = (tex2D(nTex.zw).y + rgbyM.y) * 0.5f;
 	
-	float4 rgbyM = tex2D(SceneSampler, pos.xy);
+	
 	float lumaM = rgbyM.y;
 	
 	
@@ -79,14 +88,14 @@ float4 FxaaPixelShader(
 /*--------------------------------------------------------------------------*/
     float2 dir1 = normalize(dir.xy);
    
-    float4 rgbyN1 = tex2D(SceneSampler, pos.xy - dir1 * fxaaConsoleRcpFrameOpt.zw);
-    float4 rgbyP1 = tex2D(SceneSampler, pos.xy + dir1 * fxaaConsoleRcpFrameOpt.zw);
+    float4 rgbyN1 = tex2D(pos.xy - dir1 * fxaaConsoleRcpFrameOpt.zw);
+    float4 rgbyP1 = tex2D(pos.xy + dir1 * fxaaConsoleRcpFrameOpt.zw);
 /*--------------------------------------------------------------------------*/
     float dirAbsMinTimesC = min(abs(dir1.x), abs(dir1.y)) * fxaaConsoleEdgeSharpness;
     float2 dir2 = clamp(dir1.xy / dirAbsMinTimesC, -2.0, 2.0);
 /*--------------------------------------------------------------------------*/
-    float4 rgbyN2 = tex2D(SceneSampler, pos.xy - dir2 * fxaaConsoleRcpFrameOpt2.zw);
-    float4 rgbyP2 = tex2D(SceneSampler, pos.xy + dir2 * fxaaConsoleRcpFrameOpt2.zw);
+    float4 rgbyN2 = tex2D(pos.xy - dir2 * fxaaConsoleRcpFrameOpt2.zw);
+    float4 rgbyP2 = tex2D(pos.xy + dir2 * fxaaConsoleRcpFrameOpt2.zw);
     
 /*--------------------------------------------------------------------------*/
 	//ブレンドブレンド。
@@ -108,7 +117,10 @@ float4 FxaaPixelShader(
 [numthreads(2, 2, 1)]
 void CSMain( uint3 DTid : SV_DispatchThreadID)
 {
-	float4 rcpFrame = float4(0.0f, 0.0f, 1.0f, 1.0f);
+	//①ピクセルシェーダーの時にzwで求めているのは１テクセル隣をフェッチするためのUV座標。
+	//  コンピュートシェーダーでテクスチャをロードするときは、テクセル座標を使うため、ここでは1を指定する。
+	//float4 rcpFrame = float4(0.0f, 0.0f, 1.0f/g_sceneTexSize.x, 1.0f/g_sceneTexSize.y);
+	float4 rcpFrame = float4(0.0f, 0.0f, 1.0f, 1.0f);	
 	float4 color = FxaaPixelShader( 
 		DTid,
         rcpFrame,							// float4 fxaaConsoleRcpFrameOpt,
@@ -120,5 +132,6 @@ void CSMain( uint3 DTid : SV_DispatchThreadID)
         0.0833f								// FxaaFloat fxaaConsoleEdgeThresholdMin,
 	);
 	//float4をRGBA32フォーマットに変換。
-	outputBuffer[DTid.x + DTid.y * size.x] = PackedFloat4ToRGBA32(color);
+	outputBuffer[DTid.x + DTid.y * 256] = PackedFloat4ToRGBA32(color);
 }
+

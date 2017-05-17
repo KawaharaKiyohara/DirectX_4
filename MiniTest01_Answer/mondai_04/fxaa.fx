@@ -1,26 +1,44 @@
 /*!
- * @brief	モノクロ化コンピュートシェーダー。
+ *@brief	FXAA
+ *@details
+ * FXAAを使用したアンチエイリアス。
  */
 
+struct VS_INPUT{
+	float4		pos		: POSITION;
+	float2		uv		: TEXCOORD0;
+};
 
+struct VS_OUTPUT{
+	float4		pos		: POSITION;
+	float2		uv		: TEXCOORD0;
+};
 
-//入力テクスチャ。
-Texture2D inTexture : register( t0 );
-//出力テクスチャ。
-RWStructuredBuffer<uint>	outputBuffer : register(u0);
+float2 g_sceneTexSize;	//シーンテクスチャのサイズ。
+texture g_scene;
+sampler SceneSampler = sampler_state
+{
+	Texture = <g_scene>;
+	MipFilter = LINEAR;
+	MinFilter = LINEAR;
+	MagFilter = LINEAR;
+	AddressU = CLAMP;
+    AddressV = CLAMP;
+};
+
 
 /*!
- * @brief	float4をRGBA32フォーマットに変換。
+ *@brief	頂点シェーダー。
  */
-uint PackedFloat4ToRGBA32( float4 In )
+VS_OUTPUT VSMain( VS_INPUT In )
 {
-	return (uint)(In.a * 255) << 24 
-			| (uint)(In.b * 255) << 16 
-			| (uint)(In.g * 255) << 8 
-			| (uint)(In.r * 255);
+	VS_OUTPUT Out;
+	Out.pos = In.pos;
+	Out.uv = In.uv + float2( 0.5/g_sceneTexSize.x, 0.5/g_sceneTexSize.y);
+	return Out;
 }
 float4 FxaaPixelShader( 
-	uint3 pos, 
+	float2 pos, 
     float4 fxaaConsoleRcpFrameOpt,
     float4 fxaaConsoleRcpFrameOpt2,
     float fxaaQualityEdgeThreshold,
@@ -31,18 +49,18 @@ float4 FxaaPixelShader(
 )
 {
 	//近傍4テクセルをフェッチ。
-	uinr4 nTex = float4( 
-		pos.x + 1, 
-		pos.y + 1,
-		pos.x - -1, 
-		pos.y - -1
+	float4 nTex = float4( 
+		pos.x + 0.5f/g_sceneTexSize.x, 
+		pos.y + 0.5f/g_sceneTexSize.y,
+		pos.x - 0.5f/g_sceneTexSize.x, 
+		pos.y - 0.5f/g_sceneTexSize.y
 	);
-	float lumaNw = tex2D(SceneSampler, nTex.xy).y;
-	float lumaSw = tex2D(SceneSampler, nTex.xw).y;
-	float lumaNe = tex2D(SceneSampler, nTex.zy).y;
-	float lumaSe = tex2D(SceneSampler, nTex.zw).y;
-	
 	float4 rgbyM = tex2D(SceneSampler, pos.xy);
+	float lumaNw = (tex2D(SceneSampler, nTex.xy).y + rgbyM.y)*0.5f;
+	float lumaSw = (tex2D(SceneSampler, nTex.xw).y + rgbyM.y)*0.5f;
+	float lumaNe = (tex2D(SceneSampler, nTex.zy).y + rgbyM.y)*0.5f;
+	float lumaSe = (tex2D(SceneSampler, nTex.zw).y + rgbyM.y)*0.5f;
+	
 	float lumaM = rgbyM.y;
 	
 	
@@ -103,14 +121,13 @@ float4 FxaaPixelShader(
     
 }
 /*!
- * @brief	メイン関数。
+ *@brief	ピクセルシェーダー。
  */
-[numthreads(2, 2, 1)]
-void CSMain( uint3 DTid : SV_DispatchThreadID)
+float4 PSMain( VS_OUTPUT In ) : COLOR0
 {
-	float4 rcpFrame = float4(0.0f, 0.0f, 1.0f, 1.0f);
-	float4 color = FxaaPixelShader( 
-		DTid,
+	float4 rcpFrame = float4(0.0f, 0.0f, 1.0f/g_sceneTexSize.x, 1.0f/g_sceneTexSize.y);
+	return FxaaPixelShader( 
+		In.uv,
         rcpFrame,							// float4 fxaaConsoleRcpFrameOpt,
         rcpFrame,							// float4 fxaaConsoleRcpFrameOpt2,
         0.166f,								// FxaaFloat fxaaQualityEdgeThreshold,
@@ -119,6 +136,13 @@ void CSMain( uint3 DTid : SV_DispatchThreadID)
         0.4f,								// FxaaFloat fxaaConsoleEdgeThreshold,
         0.0833f								// FxaaFloat fxaaConsoleEdgeThresholdMin,
 	);
-	//float4をRGBA32フォーマットに変換。
-	outputBuffer[DTid.x + DTid.y * size.x] = PackedFloat4ToRGBA32(color);
+}
+
+technique FXAA
+{
+	pass p0
+	{
+		VertexShader	= compile vs_3_0 VSMain();
+		PixelShader		= compile ps_3_0 PSMain();
+	}
 }
