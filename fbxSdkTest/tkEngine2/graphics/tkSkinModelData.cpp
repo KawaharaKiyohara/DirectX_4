@@ -15,7 +15,7 @@ namespace tkEngine2{
 	}
 	bool CSkinModelData::Analyze(FbxNode* node)
 	{
-		FbxMesh* mesh = node->GetMesh();
+		/*FbxMesh* mesh = node->GetMesh();
 
 		if (mesh != nullptr) {
 			//メッシュ発見。
@@ -23,11 +23,12 @@ namespace tkEngine2{
 		}
 		for (int i = 0; i < node->GetChildCount(); i++) {
 			Analyze(node->GetChild(i));
-		}
+		}*/
+		return true;
 	}
 	bool CSkinModelData::Load(const char* filePath)
 	{
-		FbxManager& fbxManager = Engine().GetFbxManager();
+		/*FbxManager& fbxManager = Engine().GetFbxManager();
 		//インポーターを作成。
 		FbxImporter* importer = FbxImporter::Create(&fbxManager, "Importer");
 		if (importer == nullptr) {
@@ -50,7 +51,7 @@ namespace tkEngine2{
 
 		//読み込みが終わったらもういらないから破棄する。
 		importer->Destroy();
-		scene->Destroy();
+		scene->Destroy();*/
 		return true;
 	}
 }
