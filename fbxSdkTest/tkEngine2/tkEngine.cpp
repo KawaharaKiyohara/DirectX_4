@@ -27,11 +27,6 @@ namespace tkEngine2 {
 		}
 		//GameObjectManagerの初期化。
 		GameObjectManager().Init(initParam.gameObjectPrioMax);
-		//FBXManagerの初期化。
-		m_fbxManager = FbxManager::Create();
-		if (m_fbxManager == nullptr) {
-			return false;
-		}
 		return true;
 	}
 	bool CEngine::InitWindow( const SInitParam& initParam )
@@ -122,11 +117,39 @@ namespace tkEngine2 {
 		if (FAILED(hr)) {
 			return false;
 		}
+		//深度ステンシルビューを作成する。
+		// Create depth stencil texture
+		D3D11_TEXTURE2D_DESC descDepth;
+		ZeroMemory(&descDepth, sizeof(descDepth));
+		descDepth.Width = m_frameBufferWidth;
+		descDepth.Height = m_frameBufferHeight;
+		descDepth.MipLevels = 1;
+		descDepth.ArraySize = 1;
+		descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		descDepth.SampleDesc.Count = 1;
+		descDepth.SampleDesc.Quality = 0;
+		descDepth.Usage = D3D11_USAGE_DEFAULT;
+		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		descDepth.CPUAccessFlags = 0;
+		descDepth.MiscFlags = 0;
+		hr = m_pd3dDevice->CreateTexture2D(&descDepth, NULL, &m_pDepthStencil);
+		if (FAILED(hr)) {
+			return hr;
+		}
+		// Create the depth stencil view
+		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+		ZeroMemory(&descDSV, sizeof(descDSV));
+		descDSV.Format = descDepth.Format;
+		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+		descDSV.Texture2D.MipSlice = 0;
+		hr = m_pd3dDevice->CreateDepthStencilView(m_pDepthStencil, &descDSV, &m_pDepthStencilView);
+		if (FAILED(hr))
+			return hr;
 
 		//レンダリングコンテキストの初期化。
 		m_renderContext.Init(m_pImmediateContext);
 
-		m_renderContext.OMSetRenderTargets(1, &m_pRenderTargetView, NULL);
+		m_renderContext.OMSetRenderTargets(1, &m_pRenderTargetView, m_pDepthStencilView);
 
 		//ビューポートを設定。
 		m_renderContext.RSSetViewport(0.0f, 0.0f, (FLOAT)m_frameBufferWidth, (FLOAT)m_frameBufferHeight);
@@ -135,10 +158,6 @@ namespace tkEngine2 {
 	}
 	void CEngine::Final()
 	{
-		if (m_fbxManager) {
-			m_fbxManager->Destroy();
-			m_fbxManager = nullptr;
-		}
 		if( m_pImmediateContext ){
 			m_pImmediateContext->ClearState();
 			m_pImmediateContext = nullptr;
@@ -147,6 +166,14 @@ namespace tkEngine2 {
 	    if( m_pRenderTargetView ){
 			m_pRenderTargetView->Release();
 			m_pRenderTargetView = nullptr;
+		}
+		if (m_pDepthStencil) {
+			m_pDepthStencil->Release();
+			m_pDepthStencil = nullptr;
+		}
+		if (m_pDepthStencilView) {
+			m_pDepthStencilView->Release();
+			m_pDepthStencilView = nullptr;
 		}
 	    if( m_pSwapChain ){
 			m_pSwapChain->Release();

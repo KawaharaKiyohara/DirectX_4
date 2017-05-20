@@ -60,6 +60,7 @@ namespace tkEngine2{
 			if (rtNo < m_numRenderTargetView
 				&& m_renderTargetViews != nullptr) {
 				m_pD3DDeviceContext->ClearRenderTargetView(m_renderTargetViews[rtNo], clearColor);
+				m_pD3DDeviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 			}
 		}
 		/*!

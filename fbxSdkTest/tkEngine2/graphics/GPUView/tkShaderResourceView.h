@@ -21,11 +21,7 @@ namespace tkEngine2{
 		 *@param[in]	structuredBuffer	structuredBuffer
 		 */
 		bool Create(CStructuredBuffer& structuredBuffer);
-		/*!
-		*@brief	TextureDataからSRVを作成。
-		*@param[in]	texData		テクスチャデータ。
-		*/
-		bool Create(CTextureData& texData);
+	
 		/*!
 		 *@brief	明示的な開放。
 		 *@details

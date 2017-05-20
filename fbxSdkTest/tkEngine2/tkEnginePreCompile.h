@@ -34,8 +34,10 @@
 #include <map>
 #include <wincodec.h>
 #include <wincodecsdk.h>
-#include <fbxsdk.h>
 #include "DirectXTex/DirectXTex.h"
+#include "DirectXTK/Inc/Model.h"
+#include "DirectXTK/Inc/Effects.h"	
+#include "DirectXTK/Inc/CommonStates.h"
 #include "tkEngine2/policy/tkNoncopyable.h"
 #include "tkEngine2/policy/tkScopedResource.h"
 #include "tkEngine2/debug/tkLog.h"

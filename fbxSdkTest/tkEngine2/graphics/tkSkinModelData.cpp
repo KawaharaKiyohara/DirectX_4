@@ -13,21 +13,11 @@ namespace tkEngine2{
 	CSkinModelData::~CSkinModelData()
 	{
 	}
-	bool CSkinModelData::Analyze(FbxNode* node)
+	
+	bool CSkinModelData::Load(const wchar_t* filePath)
 	{
-		/*FbxMesh* mesh = node->GetMesh();
-
-		if (mesh != nullptr) {
-			//メッシュ発見。
-			//mesh->
-		}
-		for (int i = 0; i < node->GetChildCount(); i++) {
-			Analyze(node->GetChild(i));
-		}*/
-		return true;
-	}
-	bool CSkinModelData::Load(const char* filePath)
-	{
+		DirectX::EffectFactory effectFactory(Engine().GetD3DDevice());
+		m_modelDx = DirectX::Model::CreateFromCMO(Engine().GetD3DDevice(), filePath, effectFactory, false);
 		/*FbxManager& fbxManager = Engine().GetFbxManager();
 		//インポーターを作成。
 		FbxImporter* importer = FbxImporter::Create(&fbxManager, "Importer");

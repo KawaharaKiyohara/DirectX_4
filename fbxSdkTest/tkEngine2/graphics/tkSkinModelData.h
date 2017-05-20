@@ -23,12 +23,12 @@ namespace tkEngine2{
 		 *@param[in]	filePath	ファイルパス。
 		 *@return	trueが返ってきたらロード成功。
 		 */
-		bool Load( const char* filePath );
+		bool Load( const wchar_t* filePath );
+		DirectX::Model& GetBody()
+		{
+			return *m_modelDx;
+		}
 	private:
-		/*!
-		*@brief	シーンを解析。。
-		*@param[in]	node	ノード。
-		*/
-		bool Analyze(FbxNode* node);
+		std::unique_ptr<DirectX::Model> m_modelDx;
 	};
 }

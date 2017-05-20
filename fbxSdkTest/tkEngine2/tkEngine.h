@@ -66,6 +66,13 @@ namespace tkEngine2{
 			return m_pd3dDevice;
 		}
 		/*!
+		*@brief	ID3D11DeviceContextの取得。
+		*/
+		ID3D11DeviceContext* GetD3DDeviceContext() const
+		{
+			return m_pImmediateContext;
+		}
+		/*!
 		*@brief	メインレンダリングターゲットビューを取得。
 		*/
 		ID3D11RenderTargetView* GetMainRenderTargtView() const
@@ -85,15 +92,6 @@ namespace tkEngine2{
 		int GetFrameBufferHeight() const
 		{
 			return m_frameBufferHeight;
-		}
-		/*!
-		*@brief		FbxManagerを取得。
-		*@details
-		* エンジン内部でのみ使用するように。
-		*/
-		FbxManager& GetFbxManager() const
-		{
-			return *m_fbxManager;
 		}
 	private:
 		/*!
@@ -122,7 +120,8 @@ namespace tkEngine2{
 		ID3D11DeviceContext*	m_pImmediateContext = nullptr;				//!<D3D11即時デバイスコンテキスト。
 		IDXGISwapChain*			m_pSwapChain = nullptr;						//!<SwapChain。
 		ID3D11RenderTargetView*	m_pRenderTargetView = nullptr;				//!<メインレンダリングターゲット。
-		FbxManager*				m_fbxManager = nullptr;						//!<FBXマネージャ。
+		ID3D11Texture2D*        m_pDepthStencil = nullptr;					//!<デブスステンシル
+		ID3D11DepthStencilView* m_pDepthStencilView = nullptr;				//!<デプスステンシルビュー。
 		int						m_screenWidth = 0;							//!<スクリーンの幅。
 		int						m_screenHeight = 0;							//!<スクリーンの高さ。
 		int						m_frameBufferWidth = 0;						//!<フレームバッファの幅。これが内部解像度。

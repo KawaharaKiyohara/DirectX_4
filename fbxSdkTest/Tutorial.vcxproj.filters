@@ -38,6 +38,12 @@
     <Filter Include="tkEngine2\timer">
       <UniqueIdentifier>{62ff5b6a-645c-4701-a8f0-9a8444141987}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{83779c08-fa75-4230-bc0f-fc529f719c66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets\modelData">
+      <UniqueIdentifier>{25bda95f-f45b-4ad1-a6c8-e2804242eac7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tkEngine2\tkEngine.cpp">
@@ -91,9 +97,6 @@
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="tkEngine2\graphics\GPUBuffer\tkGPUBuffer.cpp">
       <Filter>tkEngine2\graphics\GPUBuffer</Filter>
-    </ClCompile>
-    <ClCompile Include="tkEngine2\graphics\tkTextureData.cpp">
-      <Filter>tkEngine2\graphics</Filter>
     </ClCompile>
     <ClCompile Include="tkEngine2\graphics\tkSamplerState.cpp">
       <Filter>tkEngine2\graphics</Filter>
@@ -178,9 +181,6 @@
     <ClInclude Include="tkEngine2\graphics\GPUBuffer\tkGPUBuffer.h">
       <Filter>tkEngine2\graphics\GPUBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="tkEngine2\graphics\tkTextureData.h">
-      <Filter>tkEngine2\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="tkEngine2\graphics\tkSamplerState.h">
       <Filter>tkEngine2\graphics</Filter>
     </ClInclude>
@@ -200,5 +200,13 @@
     <ResourceCompile Include="Tutorial.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Assets\modelData\box.FBX">
+      <Filter>Assets\modelData</Filter>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\modelData\Thethief_H.fbx">
+      <Filter>Assets\modelData</Filter>
+    </MeshContentTask>
   </ItemGroup>
 </Project>

@@ -46,19 +46,4 @@ namespace tkEngine2{
 	    }
 		return true;
 	}
-	/*!
-	*@brief	TextureDataからSRVを作成。
-	*@param[in]	texData		テクスチャデータ。
-	*/
-	bool CShaderResourceView::Create(CTextureData& texData)
-	{
-		Release();
-		//シェーダーリソースビューを作成。
-		HRESULT hr = DirectX::CreateShaderResourceView(Engine().GetD3DDevice(), texData.GetImages(), texData.GetNumImages(), texData.GetMetadata(), &m_srv);
-		if (FAILED(hr)) {
-			TK_LOG("Failed CTexture::Init\n");
-			return false;
-		}
-		return true;
-	}
 }

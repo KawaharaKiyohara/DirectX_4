@@ -59,7 +59,10 @@
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\MeshContentTask.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.props" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -77,8 +80,8 @@
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>C:\Program Files %28x86%29\Windows Kits\8.1\Include\um;$(ProjectDir);C:\Program Files\Autodesk\FBX\FBX SDK\2015.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\8.1\Lib\winv6.3\um\x86;$(ProjectDir)/tkEngine2/DirectXTex/Bin/Desktop_2013/Win32/Debug;C:\Program Files\Autodesk\FBX\FBX SDK\2015.1\lib\vs2013\x86\debug;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Windows Kits\8.1\Include\um;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\8.1\Lib\winv6.3\um\x86;$(ProjectDir)/tkEngine2/DirectXTex/Bin/Desktop_2013/Win32/Debug;$(ProjectDir)/tkEngine2/DirectXTK/Bin/Desktop_2015_Win10/Win32/Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -133,7 +136,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTex.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;winmm.lib;comctl32.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
@@ -370,7 +373,6 @@
     <ClCompile Include="tkEngine2\graphics\tkShader.cpp" />
     <ClCompile Include="tkEngine2\graphics\tkSkinModel.cpp" />
     <ClCompile Include="tkEngine2\graphics\tkSkinModelData.cpp" />
-    <ClCompile Include="tkEngine2\graphics\tkTextureData.cpp" />
     <ClCompile Include="tkEngine2\math\tkAabb.cpp" />
     <ClCompile Include="tkEngine2\math\tkMath.cpp" />
     <ClCompile Include="tkEngine2\math\tkMatrix.cpp" />
@@ -398,7 +400,6 @@
     <ClInclude Include="tkEngine2\graphics\tkShader.h" />
     <ClInclude Include="tkEngine2\graphics\tkSkinModel.h" />
     <ClInclude Include="tkEngine2\graphics\tkSkinModelData.h" />
-    <ClInclude Include="tkEngine2\graphics\tkTextureData.h" />
     <ClInclude Include="tkEngine2\math\tkAabb.h" />
     <ClInclude Include="tkEngine2\math\tkMath.h" />
     <ClInclude Include="tkEngine2\math\tkMatrix.h" />
@@ -412,9 +413,18 @@
     <ResourceCompile Include="Tutorial.rc" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="Assets\modelData\box.FBX">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Resources/modelData/%(Filename).cmo</ContentOutput>
+    </MeshContentTask>
+    <MeshContentTask Include="Assets\modelData\Thethief_H.fbx">
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Resources/modelData/%(Filename).cmo</ContentOutput>
+    </MeshContentTask>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\MeshContentTask.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
+  </ImportGroup>
 </Project>

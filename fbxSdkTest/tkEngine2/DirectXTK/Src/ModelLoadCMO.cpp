@@ -521,7 +521,7 @@ std::unique_ptr<Model> DirectX::Model::CreateFromCMO( ID3D11Device* d3dDevice, c
         XMVECTOR max = XMVectorSet( extents->MaxX, extents->MaxY, extents->MaxZ, 0.f );
         BoundingBox::CreateFromPoints( mesh->boundingBox, min, max );
 
-#if 0
+#if 1
         // Animation data
         if ( *bSkeleton )
         {
