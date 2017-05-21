@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "tkEngine2/graphics/tkRenderTarget.h"
+
 namespace tkEngine2{
 	/*!
 	 *@brief	初期化用のパラメータ。
@@ -73,13 +75,6 @@ namespace tkEngine2{
 			return m_pImmediateContext;
 		}
 		/*!
-		*@brief	メインレンダリングターゲットビューを取得。
-		*/
-		ID3D11RenderTargetView* GetMainRenderTargtView() const
-		{
-			return m_pRenderTargetView;
-		}
-		/*!
 		*@brief		フレームバッファの幅を取得。
 		*/
 		int GetFrameBufferWidth() const
@@ -119,9 +114,10 @@ namespace tkEngine2{
 		CRenderContext			m_renderContext;							//!<レンダリングコンテキスト。
 		ID3D11DeviceContext*	m_pImmediateContext = nullptr;				//!<D3D11即時デバイスコンテキスト。
 		IDXGISwapChain*			m_pSwapChain = nullptr;						//!<SwapChain。
-		ID3D11RenderTargetView*	m_pRenderTargetView = nullptr;				//!<メインレンダリングターゲット。
+		CRenderTarget			m_mainRenderTarget;							//!<メインレンダリングターゲット。
+		/*ID3D11RenderTargetView*	m_pRenderTargetView = nullptr;				//!<メインレンダリングターゲット。
 		ID3D11Texture2D*        m_pDepthStencil = nullptr;					//!<デブスステンシル
-		ID3D11DepthStencilView* m_pDepthStencilView = nullptr;				//!<デプスステンシルビュー。
+		ID3D11DepthStencilView* m_pDepthStencilView = nullptr;				//!<デプスステンシルビュー。*/
 		int						m_screenWidth = 0;							//!<スクリーンの幅。
 		int						m_screenHeight = 0;							//!<スクリーンの高さ。
 		int						m_frameBufferWidth = 0;						//!<フレームバッファの幅。これが内部解像度。

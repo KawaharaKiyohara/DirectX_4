@@ -15,6 +15,7 @@
 
 namespace tkEngine2{
 	class CVertexBuffer;
+	class CRenderTarget;
 	class CRenderContext : Noncopyable{
 	public:
 		CRenderContext(){}
@@ -28,11 +29,10 @@ namespace tkEngine2{
 		 * @brief	レンダリングターゲットビューを設定。
 		 * @details
 		 *  ID3D11DeviceContext::OMSetRenderTargetsと同じ。
-		 *@param[in]	NumViews			バインドするレンダリングターゲットの数。
-		 *@param[in]	ppRenderTargetViews	バインドするレンダリングターゲットの配列へのポインタ。
-		 *@param[in]	pDepthStencilView	バインドする深度ステンシルビューへのポインタ。
+		 *@param[in]	NumViews		バインドするレンダリングターゲットの数。
+		 *@param[in]	renderTarget	バインドするレンダリングターゲットの配列へのポインタ。
 		 */
-		void OMSetRenderTargets(unsigned int NumViews, ID3D11RenderTargetView *const *ppRenderTargetViews, ID3D11DepthStencilView *pDepthStencilView);
+		void OMSetRenderTargets(unsigned int NumViews, CRenderTarget* renderTarget);
 		/*!
 		 * @brief	ビューポートを設定。
 		 *@param[in]	topLeftX	ビューポートの左上のX座標。
@@ -250,10 +250,11 @@ namespace tkEngine2{
 			}
 		}
 	private:
+		static const int MRT_MAX = 8;	//MRTの最大数。
 		ID3D11DeviceContext*			m_pD3DDeviceContext = nullptr;	//!<D3Dデバイスコンテキスト。
 		D3D11_VIEWPORT 					m_viewport;						//!<ビューポート。
-		ID3D11RenderTargetView *const* 	m_renderTargetViews = nullptr;	//!<現在使用されているレンダリングターゲットビュー。
-		ID3D11DepthStencilView*			m_depthStencilView = nullptr;	//!<現在設定されているデプスステンシルビュー。
+		ID3D11RenderTargetView*			m_renderTargetViews[MRT_MAX] = {nullptr};	//!<現在使用されているレンダリングターゲットビュー。
+		ID3D11DepthStencilView*			m_depthStencilView;				//!<現在設定されているデプスステンシルビュー。
 		unsigned int 					m_numRenderTargetView = 0;		//!<レンダリングターゲットビューの数。
 	};
 }
