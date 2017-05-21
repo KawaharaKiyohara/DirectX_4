@@ -5,9 +5,6 @@
       <UniqueIdentifier>{8e114980-c1a3-4ada-ad7c-83caadf5daeb}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="DXUT">
-      <UniqueIdentifier>{a43c5c25-0e86-4a20-b64a-883785ff74fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="tkEngine2">
       <UniqueIdentifier>{3f6eda5c-91eb-4bcb-8c8e-d4451da1920f}</UniqueIdentifier>
     </Filter>

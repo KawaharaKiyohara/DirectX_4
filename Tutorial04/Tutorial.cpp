@@ -64,7 +64,7 @@ public:
 				Engine().GetFrameBufferWidth(),
 				Engine().GetFrameBufferHeight(),
 				1,
-				DXGI_FORMAT_R8G8B8A8_UNORM,
+				DXGI_FORMAT_R16G16B16A16_FLOAT,
 				i == 0 ? DXGI_FORMAT_D24_UNORM_S8_UINT : DXGI_FORMAT_UNKNOWN,	//iが0ならデプスステンシルを作る。
 				multiSampleDesc
 			);
