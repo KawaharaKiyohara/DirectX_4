@@ -114,14 +114,21 @@ namespace tkEngine2 {
 		DXGI_SAMPLE_DESC multiSampleDesc;
 		multiSampleDesc.Count = 1;
 		multiSampleDesc.Quality = 0;
-		bool ret = m_mainRenderTarget.Create(
+		bool ret = m_mainRenderTarget[0].Create(
 			m_frameBufferWidth,
 			m_frameBufferHeight,
 			1,
 			DXGI_FORMAT_R8G8B8A8_UNORM,
 			DXGI_FORMAT_D24_UNORM_S8_UINT,
-			multiSampleDesc,
-			pBackBuffer
+			multiSampleDesc
+		);
+		ret = m_mainRenderTarget[1].Create(
+			m_frameBufferWidth,
+			m_frameBufferHeight,
+			1,
+			DXGI_FORMAT_R8G8B8A8_UNORM,
+			DXGI_FORMAT_D24_UNORM_S8_UINT,
+			multiSampleDesc
 		);
 		if (!ret) {
 			return false;
@@ -130,12 +137,23 @@ namespace tkEngine2 {
 		//レンダリングコンテキストの初期化。
 		m_renderContext.Init(m_pImmediateContext);
 
-		m_renderContext.OMSetRenderTargets(1, &m_mainRenderTarget);
+		m_renderContext.OMSetRenderTargets(1, &m_mainRenderTarget[0]);
 
 		//ビューポートを設定。
 		m_renderContext.RSSetViewport(0.0f, 0.0f, (FLOAT)m_frameBufferWidth, (FLOAT)m_frameBufferHeight);
 
 		return true;
+	}
+	void CEngine::CopyMainRenderTargetToBackBuffer()
+	{
+		ID3D11Texture2D* pBackBuffer = NULL;
+		m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+
+		m_pImmediateContext->CopyResource(
+			pBackBuffer,
+			m_mainRenderTarget[m_currentMainRenderTarget].GetRenderTarget()
+		);
+		pBackBuffer->Release();
 	}
 	void CEngine::Final()
 	{
@@ -143,8 +161,8 @@ namespace tkEngine2 {
 			m_pImmediateContext->ClearState();
 			m_pImmediateContext = nullptr;
 		}
-		m_mainRenderTarget.Release();
-	    
+		m_mainRenderTarget[0].Release();
+		m_mainRenderTarget[1].Release();
 	    if( m_pSwapChain ){
 			m_pSwapChain->Release();
 			m_pSwapChain = nullptr;
@@ -181,7 +199,9 @@ namespace tkEngine2 {
 		sw.Start();
 		CGameObjectManager& goMgr = GameObjectManager();
 		goMgr.Execute(m_renderContext);
-
+		//メインレンダリングターゲットの内容をバックバッファにコピー。
+		CopyMainRenderTargetToBackBuffer();
+		
 		m_pSwapChain->Present(0, 0);
 		sw.Stop();
 		Log("1Frame time = %lf\n", sw.GetElapsed());

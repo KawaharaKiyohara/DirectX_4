@@ -25,8 +25,7 @@ namespace tkEngine2{
 	*/
 	void CQuaternion::SetRotation(const CMatrix& m)
 	{
-		TK_ASSERT(false, "–¢ŽÀ‘•");
-		//D3DXQuaternionRotationMatrix((D3DXQUATERNION*)this, (D3DXMATRIX*)&m);
+		DirectX::XMStoreFloat4(&vec, DirectX::XMQuaternionRotationMatrix(m));
 	}
 
 }

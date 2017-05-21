@@ -39,6 +39,13 @@ namespace tkEngine2{
 		 */
 		void Release();
 		/*!
+		*@brief	レンダリングターゲットを取得。
+		*/
+		ID3D11Texture2D* GetRenderTarget()
+		{
+			return m_renderTarget;
+		}
+		/*!
 		*@brief	レンダリングターゲットビューの取得。
 		*/
 		ID3D11RenderTargetView* GetRenderTargetView()
@@ -52,6 +59,7 @@ namespace tkEngine2{
 		{
 			return m_depthStencilView;
 		}
+	
 	private:
 		ID3D11Texture2D*			m_renderTarget = nullptr;			//!<レンダリングターゲットとなるテクスチャ。
 		ID3D11RenderTargetView*		m_renderTargetView = nullptr;		//!<レンダーターゲットビュー。

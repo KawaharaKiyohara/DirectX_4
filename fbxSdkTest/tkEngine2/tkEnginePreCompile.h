@@ -34,14 +34,17 @@
 #include <map>
 #include <wincodec.h>
 #include <wincodecsdk.h>
+
 #include "DirectXTex/DirectXTex.h"
 #include "DirectXTK/Inc/Model.h"
 #include "DirectXTK/Inc/Effects.h"	
 #include "DirectXTK/Inc/CommonStates.h"
+
 #include "tkEngine2/policy/tkNoncopyable.h"
 #include "tkEngine2/policy/tkScopedResource.h"
 #include "tkEngine2/debug/tkLog.h"
 #include "tkEngine2/debug/tkAssert.h"
+#include "tkEngine2/math/tkMath.h"
 #include "tkEngine2/math/tkVector.h"
 #include "tkEngine2/math/tkMatrix.h"
 #include "graphics/tkRenderContext.h"

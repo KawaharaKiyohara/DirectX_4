@@ -58,7 +58,7 @@ namespace tkEngine2{
 				obj->PostRenderWrapper(renderContext);
 			}
 		}
-
+		
 #if 0
 		{
 			//ここからレンダリング部。未実装やで。

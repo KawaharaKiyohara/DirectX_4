@@ -13,7 +13,9 @@ namespace tkEngine2{
 	 */
 	class CMatrix{
 	public:
+	
 		union {
+			DirectX::XMFLOAT4X4 mat;
 			struct {
 				float _11, _12, _13, _14;
 				float _21, _22, _23, _24;
@@ -24,6 +26,30 @@ namespace tkEngine2{
 		};
 		static const CMatrix Identity;	//!<単位行列。
 	public:
+		operator DirectX::XMMATRIX() const
+		{
+			return DirectX::XMLoadFloat4x4(&mat);
+		}
+		CMatrix() {}
+		CMatrix(float m00, float m01, float m02, float m03,
+			float m10, float m11, float m12, float m13,
+			float m20, float m21, float m22, float m23,
+			float m30, float m31, float m32, float m33) :
+			mat(m00, m01, m02, m03,
+				m10, m11, m12, m13,
+				m20, m21, m22, m23,
+				m30, m31, m32, m33)
+		{
+
+		}
+		/*!
+		*@brief	代入演算子。
+		*/
+		CMatrix& operator=(const CMatrix& _m)
+		{
+			mat = _m.mat;
+			return *this;
+		}
 		/*!
 		*@brief	ベクトルと3x3行列の乗算
 		*@param[in,out]		v	乗算されるベクトル。
@@ -41,28 +67,27 @@ namespace tkEngine2{
 		*/
 		void Mul(CVector3& vOut) const
 		{
-			CVector3 vTmp = vOut;
-			vOut.x = vTmp.x * m[0][0] + vTmp.y * m[1][0] + vTmp.z * m[2][0] + m[3][0];
-			vOut.y = vTmp.x * m[0][1] + vTmp.y * m[1][1] + vTmp.z * m[2][1] + m[3][1];
-			vOut.z = vTmp.x * m[0][2] + vTmp.y * m[1][2] + vTmp.z * m[2][2] + m[3][2];
+			DirectX::XMStoreFloat3(
+				&vOut.vec, 
+				DirectX::XMVector3Transform(vOut, *this)
+			);
 		}
 		void Mul(CVector4& vOut) const
 		{
-			CVector4 vTmp = vOut;
-			vOut.x = vTmp.x * m[0][0] + vTmp.y * m[1][0] + vTmp.z * m[2][0] + vTmp.w * m[3][0];
-			vOut.y = vTmp.x * m[0][1] + vTmp.y * m[1][1] + vTmp.z * m[2][1] + vTmp.w * m[3][1];
-			vOut.z = vTmp.x * m[0][2] + vTmp.y * m[1][2] + vTmp.z * m[2][2] + vTmp.w * m[3][2];
-			vOut.w = vTmp.x * m[0][3] + vTmp.y * m[1][3] + vTmp.z * m[2][3] + vTmp.w * m[3][3];
+			DirectX::XMStoreFloat4( 
+				&vOut.vec, 
+				DirectX::XMVector4Transform(vOut, *this) 
+			);
 		}
 		/*!
 		 *@brief	平行移動行列を作成。
 		 */
 		void MakeTranslation( const CVector3& trans ) 
 		{
-			*this = Identity;
-			m[3][0] = trans.x; 
-			m[3][1] = trans.y;
-			m[3][2] = trans.z;
+			DirectX::XMStoreFloat4x4( 
+				&mat, 
+				DirectX::XMMatrixTranslationFromVector(trans)
+			);
 		}
 		/*!
 		*@brief	Y軸周りの回転行列を作成。
@@ -70,12 +95,10 @@ namespace tkEngine2{
 		*/
 		void MakeRotationY(float angle)
 		{
-			(void)angle;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixRotationY(
-				r_cast<D3DXMATRIX*>(this),
-				angle
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixRotationY(angle)
+			);
 		}
 		/*!
 		*@brief	Z軸周りの回転行列を作成。
@@ -83,12 +106,10 @@ namespace tkEngine2{
 		*/
 		void MakeRotationZ(float angle)
 		{
-			(void)angle;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixRotationZ(
-				r_cast<D3DXMATRIX*>(this),
-				angle
-				);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixRotationZ(angle)
+			);
 		}
 		/*!
 		*@brief	X軸周りの回転行列を作成。
@@ -96,12 +117,10 @@ namespace tkEngine2{
 		*/
 		void MakeRotationX(float angle)
 		{
-			(void)angle;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixRotationX(
-				r_cast<D3DXMATRIX*>(this),
-				angle
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixRotationX(angle)
+			);
 		}
 		/*!
 		 *@brief	クォータニオンから回転行列を作成。
@@ -109,12 +128,10 @@ namespace tkEngine2{
 		 */
 		void MakeRotationFromQuaternion( const CQuaternion& q )
 		{
-			(void)q;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixRotationQuaternion(
-				r_cast<D3DXMATRIX*>(this),
-				r_cast<const D3DXQUATERNION*>(&q)
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixRotationQuaternion(q)
+			);
 		}
 		/*!
 		*@brief	任意の軸周りの回転行列を作成。
@@ -123,13 +140,10 @@ namespace tkEngine2{
 		*/
 		void MakeRotationAxis(const CVector3& axis, float angle )
 		{
-			(void)axis;
-			(void)angle;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixRotationAxis(
-				r_cast<D3DXMATRIX*>(this),
-				r_cast<const D3DXVECTOR3*>(&axis),
-				angle);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixRotationAxis(axis, angle)
+			);
 		}
 		/*!
 		*@brief	拡大行列を作成。
@@ -137,14 +151,10 @@ namespace tkEngine2{
 		*/
 		void MakeScaling(const CVector3& scale)
 		{
-			(void)scale;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixScaling(
-				r_cast<D3DXMATRIX*>(this),
-				scale.x,
-				scale.y,
-				scale.z
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixScalingFromVector(scale)
+			);
 		}
 		/*!
 		* @brief	プロジェクション行列を作成。
@@ -160,18 +170,10 @@ namespace tkEngine2{
 			float fFar
 			)
 		{
-			(void)viewAngle;
-			(void)aspect;
-			(void)fNear;
-			(void)fFar;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixPerspectiveFovLH(
-				r_cast<D3DXMATRIX*>(this),
-				viewAngle,
-				aspect,
-				fNear,
-				fFar
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixPerspectiveFovLH(viewAngle, aspect, fNear, fFar)
+			);
 		}
 		/*!
 		* @brief	平行投影行列を作成。
@@ -182,12 +184,10 @@ namespace tkEngine2{
 		*/
 		void MakeOrthoProjectionMatrix( float w, float h, float fNear, float fFar )
 		{
-			(void)w;
-			(void)h;
-			(void)fNear;
-			(void)fFar;
-			TK_ASSERT(false, "未実装");
-		//	D3DXMatrixOrthoLH(r_cast<D3DXMATRIX*>(this), w, h, fNear, fFar);
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixOrthographicLH(w, h, fNear, fFar)
+			);
 		}
 		/*!
 		 * @brief	注視点、上方向、カメラ位置からカメラ行列を作成。
@@ -197,16 +197,10 @@ namespace tkEngine2{
 		 */
 		void MakeLookAt( const CVector3& position, const CVector3& target, const CVector3& up )
 		{
-			(void)position;
-			(void)target;
-			(void)up;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixLookAtLH(
-				r_cast<D3DXMATRIX*>(this),
-				r_cast<const D3DXVECTOR3*>(&position),
-				r_cast<const D3DXVECTOR3*>(&target),
-				r_cast<const D3DXVECTOR3*>(&up)
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixLookAtLH(position, target, up)
+			);
 		}
 		/*!
 		 *@brief	行列と行列の乗算
@@ -215,14 +209,10 @@ namespace tkEngine2{
 		 */
 		void Mul( const CMatrix& m0, const CMatrix& m1 )
 		{
-			(void)m0;
-			(void)m1;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixMultiply(
-				r_cast<D3DXMATRIX*>(this),
-				r_cast<const D3DXMATRIX*>(&m0),
-				r_cast<const D3DXMATRIX*>(&m1)
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixMultiply(m0, m1)
+			);
 		}
 		/*!
 		 *@brief	逆行列を計算。
@@ -230,18 +220,17 @@ namespace tkEngine2{
 		 */
 		void Inverse( const CMatrix& _m )
 		{
-			(void)_m;
-			TK_ASSERT(false, "未実装");
-		/*	D3DXMatrixInverse(
-				r_cast<D3DXMATRIX*>(this),
-				NULL,
-				r_cast<const D3DXMATRIX*>(&m)
-			);*/
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixInverse(NULL, _m)
+			);
 		}
 		void Transpose()
 		{
-			TK_ASSERT(false, "未実装");
-		//	D3DXMatrixTranspose(r_cast<D3DXMATRIX*>(this), r_cast<D3DXMATRIX*>(this));
+			DirectX::XMStoreFloat4x4(
+				&mat,
+				DirectX::XMMatrixTranspose(*this)
+			);
 		}
 		
 	};

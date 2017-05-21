@@ -41,8 +41,9 @@ namespace tkEngine2{
 	class CVector3{
 	public:
 		union{
+			DirectX::XMFLOAT3 vec;
+			float v[4];
 			struct { float x, y, z; };
-			float v[3];
 		};
 		static const CVector3 Zero;
 		static const CVector3 Right;
@@ -56,7 +57,20 @@ namespace tkEngine2{
 		static const CVector3 AxisZ;
 		static const CVector3 One;
 	public:
+		//XMVECTORへの暗黙の変換。
+		operator DirectX::XMVECTOR() const
+		{
+			return DirectX::XMLoadFloat3(&vec);
+		}
 		//operator D3DXVECTOR3(void) { return s_cast<D3DXVECTOR3>(*this); }
+		/*!
+		*@brief	代入演算子。
+		*/
+		CVector3& operator=(const CVector3& _v)
+		{
+			vec = _v.vec;
+			return *this;
+		}
 		CVector3() {}
 		/*!
 		* @brief	コンストラクタ。
@@ -72,9 +86,11 @@ namespace tkEngine2{
 		*/
 		void Lerp(float t, const CVector3& v0, const CVector3& v1)
 		{
-			x = v0.x + (v1.x - v0.x) * t;
-			y = v0.y + (v1.y - v0.y) * t;
-			z = v0.z + (v1.z - v0.z) * t;
+			DirectX::XMVECTOR _v = DirectX::XMVectorLerp(
+				DirectX::XMLoadFloat3(&v0.vec),
+				DirectX::XMLoadFloat3(&v1.vec),
+				t);
+			DirectX::XMStoreFloat3(&vec, _v);
 		}
 		template<class TVector>
 		void CopyTo(TVector& dst) const
@@ -88,16 +104,14 @@ namespace tkEngine2{
 		*/
 		void Set(float _x, float _y, float _z)
 		{
-			this->x = _x;
-			this->y = _y;
-			this->z = _z;
+			vec.x = _x;
+			vec.y = _y;
+			vec.z = _z;
 		}
 		template<class TVector>
 		void Set(TVector& v)
 		{
-			this->x = v.x;
-			this->y = v.y;
-			this->z = v.z;
+			Set(v.x, v.y, v.z);
 		}
 		/*void Set(btVector3& v)
 		{
@@ -109,127 +123,122 @@ namespace tkEngine2{
 		/*!
 		 * @brief	ベクトルを加算。
 		 */
-		void Add(const CVector3& _v) 
+		void Add( const CVector3& _v) 
 		{
-			x += _v.x;
-			y += _v.y;
-			z += _v.z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&_v.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorAdd(xmv0, xmv1);
+			DirectX::XMStoreFloat3(&vec, xmvr);
 		}
 		void Add( const CVector3& v0, const CVector3& v1 )
 		{
-			x = v0.x + v1.x;
-			y = v0.y + v1.y;
-			z = v0.z + v1.z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&v0.vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&v1.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorAdd(xmv0, xmv1);
+			DirectX::XMStoreFloat3(&vec, xmvr);
 		}
 		/*!
 		 * @brief	ベクトルを減算。
 		 */
 		void Subtract( const CVector3& _v )
 		{
-			x -= _v.x;
-			y -= _v.y;
-			z -= _v.z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&_v.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorSubtract(xmv0, xmv1);
+			DirectX::XMStoreFloat3(&vec, xmvr);
 		}
 		void Subtract( const CVector3& v0, const CVector3& v1 )
 		{
-			x = v0.x - v1.x;
-			y = v0.y - v1.y;
-			z = v0.z - v1.z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&v0.vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&v1.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorSubtract(xmv0, xmv1);
+			DirectX::XMStoreFloat3(&vec, xmvr);
 		}
 		/*!
 		 * @brief	内積。
 		 */
 		float Dot( const CVector3& _v ) const
 		{
-			return x * _v.x + y * _v.y + z * _v.z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&_v.vec);
+			return DirectX::XMVector3Dot(xmv0, xmv1).m128_f32[0];
 		}
 		/*!
 		 * @brief	外積。
 		 */
 		void Cross(const CVector3& _v)
 		{
-			float _x = ( x * _v.z ) - ( _v.y * z );
-			float _y = ( z * _v.x ) - ( _v.z * x );
-			float _z = ( x * _v.y ) - ( _v.x * y );
-			x = _x;
-			y = _y;
-			z = _z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&_v.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVector3Cross(xmv0, xmv1);
+			DirectX::XMStoreFloat3(&vec, xmvr);
 		}
 		void Cross(const CVector3& v0, const CVector3& v1)
 		{
-			float _x = ( v0.y * v1.z ) - ( v1.y * v0.z );
-			float _y = ( v0.z * v1.x ) - ( v1.z * v0.x );
-			float _z = ( v0.x * v1.y ) - ( v1.x * v0.y );
-			x = _x;
-			y = _y;
-			z = _z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&v0.vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&v1.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVector3Cross(xmv0, xmv1);
+			DirectX::XMStoreFloat3(&vec, xmvr);
 		}
 		/*!
 		 * @brief	長さを取得
 		 */
 		float Length() const
 		{
-			return sqrt(LengthSq());
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat3(&vec);
+			return DirectX::XMVector3Length(xmv).m128_f32[0];
 		}
 		/*!
 		 * @brief	長さの二乗を取得
 		 */
 		float LengthSq() const
 		{
-			return x * x + y * y + z * z;
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat3(&vec);
+			return DirectX::XMVector3LengthSq(xmv).m128_f32[0];
 		}
 		/*!
 		* @brief	拡大。
 		*/
 		void Scale(float s)
 		{
-			x *= s;
-			y *= s;
-			z *= s;
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat3(&vec);
+			xmv = DirectX::XMVectorScale(xmv, s);
+			DirectX::XMStoreFloat3(&vec, xmv);
 		}
 		/*!
 		* @brief	法線を正規化。
 		*/
 		void Normalize()
 		{
-			float len = Length();
-			if (len > 0.0f) {
-				x /= len;
-				y /= len;
-				z /= len;
-			}
-			else {
-				x = 0.0f;
-				y = 0.0f;
-				z = 0.0f;
-			}
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat3(&vec);
+			xmv = DirectX::XMVector3Normalize(xmv);
+			DirectX::XMStoreFloat3(&vec, xmv);
 		}
 		/*!
 		* @brief	除算。
 		*/
 		void Div(float d)
 		{
-			x /= d;
-			y /= d;
-			z /= d;
+			float scale = 1.0f / d;
+			Scale(scale);
 		}
 		/*!
 		* @brief	最大値を設定。
 		*/
 		void Max(const CVector3& vMax)
 		{
-			x = max(x, vMax.x);
-			y = max(y, vMax.y);
-			z = max(z, vMax.z);
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&vMax.vec);
+			DirectX::XMStoreFloat3(&vec,  DirectX::XMVectorMax(xmv0, xmv1));
 		}
 		/*!
 		* @brief	最小値を設定。
 		*/
 		void Min(const CVector3& vMin)
 		{
-			x = min(x, vMin.x);
-			y = min(y, vMin.y);
-			z = min(z, vMin.z);
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat3(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat3(&vMin.vec);
+			DirectX::XMStoreFloat3(&vec, DirectX::XMVectorMin(xmv0, xmv1));
 		}
 	};
 	/*!
@@ -238,11 +247,24 @@ namespace tkEngine2{
 	class CVector4{
 	public:
 		union{
+			DirectX::XMFLOAT4 vec;
 			struct { float x, y, z, w; };
 			float v[4];
 		};
 	public:
+		operator DirectX::XMVECTOR() const
+		{
+			return DirectX::XMLoadFloat4(&vec);
+		}
 		CVector4(){}
+		/*!
+		*@brief	代入演算子。
+		*/
+		CVector4& operator=(const CVector4& _v)
+		{
+			vec = _v.vec;
+			return *this;
+		}
 		/*!
 		 *@brief	コンストラクタ
 		 */
@@ -294,64 +316,68 @@ namespace tkEngine2{
 		 */
 		void Add( const CVector4& _v )
 		{
-			x += _v.x;
-			y += _v.y;
-			z += _v.z;
-			w += _v.w;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat4(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat4(&_v.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorAdd(xmv0, xmv1);
+			DirectX::XMStoreFloat4(&vec, xmvr);
 		}
 		void Add( const CVector4& v0, const CVector4& v1 )
 		{
-			x = v0.x + v1.x;
-			y = v0.y + v1.y;
-			z = v0.z + v1.z;
-			w = v0.w + v1.w;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat4(&v0.vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat4(&v1.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorAdd(xmv0, xmv1);
+			DirectX::XMStoreFloat4(&vec, xmvr);
 		}
 		/*!
 		 *@brief	ベクトルを減算。
 		 */
 		void Subtract( const CVector4& _v )
 		{
-			x -= _v.x;
-			y -= _v.y;
-			z -= _v.z;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat4(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat4(&_v.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorSubtract(xmv0, xmv1);
+			DirectX::XMStoreFloat4(&vec, xmvr);
 		}
 		void Subtract( const CVector4& v0, const CVector4& v1 )
 		{
-			x = v0.x - v1.x;
-			y = v0.y - v1.y;
-			z = v0.z - v1.z;
-			w = v0.w - v1.w;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat4(&v0.vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat4(&v1.vec);
+			DirectX::XMVECTOR xmvr = DirectX::XMVectorSubtract(xmv0, xmv1);
+			DirectX::XMStoreFloat4(&vec, xmvr);
 		}
 		/*!
 		 *@brief	内積
 		 */
 		float Dot( const CVector4& _v )
 		{
-			return x * _v.x + y * _v.y + z * _v.z + w * _v.w;
+			DirectX::XMVECTOR xmv0 = DirectX::XMLoadFloat4(&vec);
+			DirectX::XMVECTOR xmv1 = DirectX::XMLoadFloat4(&_v.vec);
+			return DirectX::XMVector4Dot(xmv0, xmv1).m128_f32[0];
 		}
 		/*!
 		 * @brief	長さを取得
 		 */
 		float Length()
 		{
-			return sqrt(LengthSq());
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat4(&vec);
+			return DirectX::XMVector4Length(xmv).m128_f32[0];
 		}
 		/*!
 		 * @brief	長さの二乗を取得
 		 */
 		float LengthSq()
 		{
-			return x * x + y * y + z * z + w * w;
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat4(&vec);
+			return DirectX::XMVector4LengthSq(xmv).m128_f32[0];
 		}
 		/*!
 		* @brief	拡大。
 		*/
 		void Scale(float s)
 		{
-			x *= s;
-			y *= s;
-			z *= s;
-			w *= s;
+			DirectX::XMVECTOR xmv = DirectX::XMLoadFloat4(&vec);
+			xmv = DirectX::XMVectorScale(xmv, s);
+			DirectX::XMStoreFloat4(&vec, xmv);
 		}
 	};
 	
@@ -419,7 +445,7 @@ namespace tkEngine2{
 		}
 	};
 	//整数型のベクトルクラス。
-	class CVector4i {
+	__declspec(align(16)) class CVector4i {
 	public:
 		union {
 			struct { int x, y, z, w; };

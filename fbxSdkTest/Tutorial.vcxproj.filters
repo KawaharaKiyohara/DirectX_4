@@ -107,6 +107,12 @@
     <ClCompile Include="tkEngine2\graphics\tkSkinModel.cpp">
       <Filter>tkEngine2\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\tkRenderTarget.cpp">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\graphics\tkCamera.cpp">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tkEngine2\tkEngine.h">
@@ -188,6 +194,12 @@
       <Filter>tkEngine2\graphics</Filter>
     </ClInclude>
     <ClInclude Include="tkEngine2\graphics\tkSkinModelData.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkRenderTarget.h">
+      <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\graphics\tkCamera.h">
       <Filter>tkEngine2\graphics</Filter>
     </ClInclude>
   </ItemGroup>

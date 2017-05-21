@@ -88,6 +88,13 @@ namespace tkEngine2{
 		{
 			return m_frameBufferHeight;
 		}
+		/*!
+		* @brief	メインレンダリングターゲットを切り替え。
+		*/
+		void ToggleMainRenderTarget()
+		{
+			m_currentMainRenderTarget ^= 1;
+		}
 	private:
 		/*!
 		 *@brief	ウィンドウ初期化。
@@ -105,6 +112,10 @@ namespace tkEngine2{
 		* @brief	更新。
 		*/
 		void Update();
+		/*!
+		* @brief	メインレンダリングターゲットの内容をバックバッファにコピー。
+		*/
+		void CopyMainRenderTargetToBackBuffer();
 	private:
 		HINSTANCE				m_hInst = nullptr;	//!<アプリケーションのインスタンス。
 		HWND					m_hWnd = nullptr;	//!<ウィンドウハンドル。
@@ -114,10 +125,9 @@ namespace tkEngine2{
 		CRenderContext			m_renderContext;							//!<レンダリングコンテキスト。
 		ID3D11DeviceContext*	m_pImmediateContext = nullptr;				//!<D3D11即時デバイスコンテキスト。
 		IDXGISwapChain*			m_pSwapChain = nullptr;						//!<SwapChain。
-		CRenderTarget			m_mainRenderTarget;							//!<メインレンダリングターゲット。
-		/*ID3D11RenderTargetView*	m_pRenderTargetView = nullptr;				//!<メインレンダリングターゲット。
-		ID3D11Texture2D*        m_pDepthStencil = nullptr;					//!<デブスステンシル
-		ID3D11DepthStencilView* m_pDepthStencilView = nullptr;				//!<デプスステンシルビュー。*/
+		int						m_currentMainRenderTarget = 0;				//!<現在のメインレンダリングターゲット。
+		CRenderTarget			m_mainRenderTarget[2];						//!<メインレンダリングターゲット。
+		
 		int						m_screenWidth = 0;							//!<スクリーンの幅。
 		int						m_screenHeight = 0;							//!<スクリーンの高さ。
 		int						m_frameBufferWidth = 0;						//!<フレームバッファの幅。これが内部解像度。

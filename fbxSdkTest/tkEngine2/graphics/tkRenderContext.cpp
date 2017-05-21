@@ -18,7 +18,7 @@ namespace tkEngine2{
 		ZeroMemory(m_renderTargetViews, sizeof(m_renderTargetViews));
 		m_depthStencilView = nullptr;
 		m_depthStencilView = renderTarget[0].GetDepthStencilView();
-		for (int i = 0; i < NumViews; i++) {
+		for (unsigned int i = 0; i < NumViews; i++) {
 			m_renderTargetViews[i] = renderTarget[i].GetRenderTargetView();
 		}
 		m_pD3DDeviceContext->OMSetRenderTargets(NumViews, m_renderTargetViews, m_depthStencilView);

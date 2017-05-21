@@ -4,51 +4,33 @@
 #include "stdafx.h"
 #include "tkEngine2/tkEnginePreCompile.h"
 #include "tkEngine2/tkEngine.h"
+#include "tkEngine2/graphics/tkCamera.h"
 
 using namespace tkEngine2;
 
 class SkinModelTest : public IGameObject {
 	CSkinModelData skinModelData;
 	CSkinModel skinModel;
+	CCamera camera;
 public:
 	bool Start() override
 	{
 		skinModelData.Load(L"Resources/modelData/Thethief_H.cmo");
+		skinModel.Init(skinModelData);
+		//ÉJÉÅÉâÇèâä˙âªÅB
+		camera.SetPosition({ 0.0f, 20.0f, 30.0f });
+		camera.SetTarget({ 0.0f, 20.0f, 0.0f });
+		camera.SetUp({ 0.0f, 1.0f, 0.0f });
+		camera.Update();
 		return true;
 	}
 	void Update() override
 	{
+		skinModel.Update(CVector3::Zero, CQuaternion::Identity, CVector3::One);
 	}
 	void Render(CRenderContext& rc)
 	{
-		DirectX::CommonStates state(Engine().GetD3DDevice());
-		state.DepthDefault();
-		DirectX::XMMATRIX worldMat, viewMat, projMat;
-		DirectX::XMVECTORF32 eyePos, targetPos, up;
-		eyePos.f[0] = 0.0f;
-		eyePos.f[1] = 20.0f;
-		eyePos.f[2] = 30.0f;
-		eyePos.f[3] = 1.0f;
-		targetPos.f[0] = 0.0f;
-		targetPos.f[1] = 20.0f;
-		targetPos.f[2] = 0.0f;
-		targetPos.f[3] = 0.0f;
-		up.f[0] = 0.0f;
-		up.f[1] = 1.0f;
-		up.f[2] = 0.0f;
-		up.f[3] = 0.0f;
-		viewMat = DirectX::XMMatrixLookAtLH(eyePos, targetPos, up);
-
-		projMat = DirectX::XMMatrixPerspectiveFovLH(3.14 * 0.3f, (float)Engine().GetFrameBufferWidth()/(float)Engine().GetFrameBufferHeight(), 0.1f, 10000.0f);
-
-		worldMat = DirectX::XMMatrixIdentity();
-		skinModelData.GetBody().Draw(
-			Engine().GetD3DDeviceContext(),
-			state,
-			worldMat,
-			viewMat,
-			projMat);
-
+		skinModel.Draw(rc, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 	}
 };
 
