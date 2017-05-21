@@ -223,6 +223,20 @@ namespace tkEngine2{
 				m_pD3DDeviceContext->CopyResource(destRes.GetBody(), srcRes.GetBody());
 			}
 		}
+		
+		void CopyResource(ID3D11Resource* destRes, ID3D11Resource* srcRes)
+		{
+			if (destRes != nullptr
+				&& srcRes != nullptr
+				) {
+				m_pD3DDeviceContext->CopyResource(destRes, srcRes);
+			}
+		}
+		/*!
+		* @brief	マップ。
+		*@param[out]	destRes		コピー先。
+		*@param[in]		srcRes		コピー元。
+		*/
 		template<class TBuffer>
 		void Map(TBuffer& buffer, UINT subresource, D3D11_MAP mapType, UINT mapFlags, D3D11_MAPPED_SUBRESOURCE& mappedResource)
 		{

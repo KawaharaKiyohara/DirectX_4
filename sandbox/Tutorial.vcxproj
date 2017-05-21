@@ -418,10 +418,10 @@
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Assets\modelData\box.FBX">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Resources/modelData/%(Filename).cmo</ContentOutput>
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Assets/modelData/%(Filename).cmo</ContentOutput>
     </MeshContentTask>
     <MeshContentTask Include="Assets\modelData\Thethief_H.fbx">
-      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Resources/modelData/%(Filename).cmo</ContentOutput>
+      <ContentOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)/Assets/modelData/%(Filename).cmo</ContentOutput>
     </MeshContentTask>
   </ItemGroup>
   <ItemGroup>

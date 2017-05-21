@@ -35,7 +35,7 @@
 #include <wincodec.h>
 #include <wincodecsdk.h>
 
-#include "DirectXTex/DirectXTex.h"
+
 #include "DirectXTK/Inc/Model.h"
 #include "DirectXTK/Inc/Effects.h"	
 #include "DirectXTK/Inc/CommonStates.h"
@@ -58,7 +58,6 @@
 #include "tkEngine2/graphics/GPUView/tkUnorderedAccessView.h"
 #include "tkEngine2/graphics/tkMapper.h"
 #include "tkEngine2/graphics/GPUBuffer/tkConstantBuffer.h"
-#include "tkEngine2/graphics/tkTextureData.h"
 #include "tkEngine2/graphics/tkSamplerState.h"
 #include "tkEngine2/graphics/tkSkinModelData.h"
 #include "tkEngine2/graphics/tkSkinModel.h"

@@ -32,7 +32,13 @@ namespace tkEngine2{
 		*/
 		void Draw(CRenderContext& renderContext, const CMatrix& viewMatrix, const CMatrix& projMatrix);
 	private:
+		struct SVSConstantBuffer {
+			CMatrix mWorld;
+			CMatrix mView;
+			CMatrix mProj;
+		};
 		CSkinModelData*	m_skinModelData = nullptr;
 		CMatrix m_worldMatrix = CMatrix::Identity;
+		CConstantBuffer m_cb;			//定数バッファ。
 	};
 }

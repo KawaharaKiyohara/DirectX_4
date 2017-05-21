@@ -46,4 +46,27 @@ namespace tkEngine2{
 	    }
 		return true;
 	}
+	/*!
+	*@brief	テクスチャ用のSRVを作成。
+	*@param[in]	texture		テクスチャ。
+	*/
+	bool CShaderResourceView::Create(ID3D11Texture2D* texture)
+	{
+		Release();
+		if (texture != nullptr) {
+			D3D11_TEXTURE2D_DESC texDesc;
+			texture->GetDesc(&texDesc);
+			D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+			ZeroMemory(&SRVDesc, sizeof(SRVDesc));
+			SRVDesc.Format = texDesc.Format;
+			SRVDesc.ViewDimension = D3D_SRV_DIMENSION_TEXTURE2D;
+			SRVDesc.Texture2D.MipLevels = texDesc.MipLevels;
+
+			HRESULT hr = Engine().GetD3DDevice()->CreateShaderResourceView(texture, &SRVDesc, &m_srv);
+			if (FAILED(hr)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

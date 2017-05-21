@@ -17,6 +17,7 @@ namespace tkEngine2{
 	void CSkinModel::Init(CSkinModelData& modelData)
 	{
 		m_skinModelData = &modelData;
+		m_cb.Create(NULL, sizeof(SVSConstantBuffer));
 	}
 	
 	void CSkinModel::Update(const CVector3& trans, const CQuaternion& rot, const CVector3& scale)
@@ -30,8 +31,17 @@ namespace tkEngine2{
 	}
 	void CSkinModel::Draw(CRenderContext& renderContext, const CMatrix& viewMatrix, const CMatrix& projMatrix)
 	{
+		(void)renderContext;
 		if (m_skinModelData != nullptr) {
 			DirectX::CommonStates state(Engine().GetD3DDevice());
+			//定数バッファを更新。
+			SVSConstantBuffer vsCb;
+			vsCb.mWorld = m_worldMatrix;
+			vsCb.mProj = projMatrix;
+			vsCb.mView = viewMatrix;
+			
+			renderContext.UpdateSubresource(m_cb, vsCb);
+			renderContext.VSSetConstantBuffer(0, m_cb);
 			m_skinModelData->GetBody().Draw(
 				Engine().GetD3DDeviceContext(),
 				state,

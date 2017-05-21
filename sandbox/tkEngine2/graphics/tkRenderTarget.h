@@ -53,17 +53,25 @@ namespace tkEngine2{
 			return m_renderTargetView;
 		}
 		/*!
+		*@brief	レンダリングターゲットのSRVを取得。
+		*/
+		CShaderResourceView& GetRenderTargetSRV()
+		{
+			return m_renderTargetSRV;
+		}
+		/*!
 		*@brief	デプスステンシルビューの取得。
 		*/
 		ID3D11DepthStencilView* GetDepthStencilView()
 		{
 			return m_depthStencilView;
 		}
-	
+		
 	private:
 		ID3D11Texture2D*			m_renderTarget = nullptr;			//!<レンダリングターゲットとなるテクスチャ。
 		ID3D11RenderTargetView*		m_renderTargetView = nullptr;		//!<レンダーターゲットビュー。
 		ID3D11Texture2D*			m_depthStencil = nullptr;			//!<デプスステンシルとなるテクスチャ。
 		ID3D11DepthStencilView*		m_depthStencilView = nullptr;		//!<デプスステンシルビュー。
+		CShaderResourceView			m_renderTargetSRV;					//!<レンダリングターゲットのSRV;
 	};
 }

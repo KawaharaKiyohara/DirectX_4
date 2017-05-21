@@ -132,7 +132,7 @@ namespace tkEngine2{
 	    // the release configuration of this program.
 	    dwShaderFlags |= D3DCOMPILE_DEBUG;
 	#endif
-		TScopedResource<ID3DBlob> blobOut;
+		
 		TScopedResource<ID3DBlob> errorBlob;
 		//シェーダーをロード。
 		static char text[5 * 1024 * 1024];

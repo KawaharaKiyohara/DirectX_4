@@ -37,7 +37,7 @@ namespace tkEngine2{
 		texDesc.Format = colorFormat;
 		texDesc.SampleDesc = multiSampleDesc;
 		texDesc.Usage = D3D11_USAGE_DEFAULT;
-		texDesc.BindFlags = D3D11_BIND_RENDER_TARGET;
+		texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 		texDesc.CPUAccessFlags = 0;
 		texDesc.MiscFlags = 0;
 		ID3D11Device* pD3DDevice = Engine().GetD3DDevice();
@@ -59,31 +59,35 @@ namespace tkEngine2{
 		if (FAILED(hr)) {
 			return false;
 		}
+		//レンダリングターゲットのSRVを作成。
+		m_renderTargetSRV.Create(m_renderTarget);
 
-		//デプスステンシルを作成。
-		texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		texDesc.Format = depthStencilFormat;
-		if (depthStencil == nullptr) {
-			hr = pD3DDevice->CreateTexture2D(&texDesc, NULL, &m_depthStencil);
+		if (depthStencilFormat != DXGI_FORMAT_UNKNOWN) {
+			//デプスステンシルを作成。
+			texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+			texDesc.Format = depthStencilFormat;
+			if (depthStencil == nullptr) {
+				hr = pD3DDevice->CreateTexture2D(&texDesc, NULL, &m_depthStencil);
+				if (FAILED(hr)) {
+					return false;
+				}
+			}
+			else {
+				//デプスステンシルが指定されている。
+				m_depthStencil = depthStencil;
+				m_depthStencil->AddRef();	//参照カウンタを増やす。
+			}
+			//デプスステンシルビューを作成。
+			// Create the depth stencil view
+			D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+			ZeroMemory(&descDSV, sizeof(descDSV));
+			descDSV.Format = texDesc.Format;
+			descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			descDSV.Texture2D.MipSlice = 0;
+			hr = pD3DDevice->CreateDepthStencilView(m_depthStencil, &descDSV, &m_depthStencilView);
 			if (FAILED(hr)) {
 				return false;
 			}
-		}
-		else {
-			//デプスステンシルが指定されている。
-			m_depthStencil = depthStencil;
-			m_depthStencil->AddRef();	//参照カウンタを増やす。
-		}
-		//デプスステンシルビューを作成。
-		// Create the depth stencil view
-		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-		ZeroMemory(&descDSV, sizeof(descDSV));
-		descDSV.Format = texDesc.Format;
-		descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		descDSV.Texture2D.MipSlice = 0;
-		hr = pD3DDevice->CreateDepthStencilView(m_depthStencil, &descDSV, &m_depthStencilView);
-		if (FAILED(hr)) {
-			return false;
 		}
 		return true;
 	}

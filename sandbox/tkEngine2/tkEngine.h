@@ -95,6 +95,10 @@ namespace tkEngine2{
 		{
 			m_currentMainRenderTarget ^= 1;
 		}
+		CRenderTarget& GetMainRenderTarget()
+		{
+			return m_mainRenderTarget[m_currentMainRenderTarget];
+		}
 	private:
 		/*!
 		 *@brief	ウィンドウ初期化。

@@ -21,7 +21,11 @@ namespace tkEngine2{
 		 *@param[in]	structuredBuffer	structuredBuffer
 		 */
 		bool Create(CStructuredBuffer& structuredBuffer);
-	
+		/*!
+		*@brief	テクスチャ用のSRVを作成。
+		*@param[in]	texture		テクスチャ。
+		*/
+		bool Create(ID3D11Texture2D* texture);
 		/*!
 		 *@brief	明示的な開放。
 		 *@details
