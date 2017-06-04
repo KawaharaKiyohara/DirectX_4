@@ -10,7 +10,9 @@
 
 
 using namespace tkEngine2;
-
+namespace{
+	const int NUM_POINT_LIGHT = 64;				//ポイントライトの数。
+}
 
 class DeferredRender : public IGameObject {
 	enum EnGBuffer {
@@ -42,7 +44,7 @@ class DeferredRender : public IGameObject {
 		CVector4	color;			//カラー。
 		CVector4	attn;			//減衰定数。(xを小さくするとライトの明るさが増す、yとzを小さくするとライトが遠くまで届くようになる。)
 	};
-	static const int NUM_POINT_LIGHT = 512;				//ポイントライトの数。
+	
 	CRenderTarget gbuffer[enGBuffer_Num];				//GBuffer
 	CShader csTBDR;										//TBDR(TileBasedDifferedRendering)用のコンピュートシェーダー。
 	CVertexBuffer vertexBuffer;							//頂点バッファ。
