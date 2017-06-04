@@ -34,7 +34,7 @@ class DeferredRender : public IGameObject {
 		CVector4	color;			//カラー。
 		CVector4	attn;			//減衰定数。(xを小さくするとライトの明るさが増す、yとzを小さくするとライトが遠くまで届くようになる。)
 	};
-	static const int NUM_POINT_LIGHT = 32;	//ポイントライトの数。
+	static const int NUM_POINT_LIGHT = 512;	//ポイントライトの数。
 	CRenderTarget gbuffer[enGBuffer_Num];	//GBuffer
 	CShader vsDeferredLightingShader;		//ディファードライティング用の頂点シェーダー。
 	CShader psDeferredLightingShader;		//ディファードライティング用のピクセルシェーダー。
@@ -50,6 +50,8 @@ class DeferredRender : public IGameObject {
 	CSkinModel bgModel;
 	
 	CCamera camera;
+	std::unique_ptr<DirectX::SpriteFont>	m_font;
+	std::unique_ptr<DirectX::SpriteBatch>	m_bach;
 	//頂点。
 	struct SSimpleVertex {
 		CVector4 pos;
@@ -86,9 +88,7 @@ public:
 			m_pointLightList[i].color.y = (float)ig / QuantizationSize;
 			m_pointLightList[i].color.z = (float)ib / QuantizationSize;
 
-			m_pointLightList[i].attn.x = 1.0f;
-			m_pointLightList[i].attn.y = 0.01f;
-			m_pointLightList[i].attn.z = 0.01f;
+			m_pointLightList[i].attn.x = 5.0f;
 		}
 		m_pointLightList[0].position.x = 0.0f;
 		m_pointLightList[0].position.y = 10.0f;
@@ -170,6 +170,9 @@ public:
 		camera.SetTarget({ 0.0f, 0.0f, 0.0f });
 		camera.SetUp({ 0.0f, 1.0f, 0.0f });
 		camera.Update();
+		//フォントを初期化。
+		m_font.reset(new DirectX::SpriteFont(Engine().GetD3DDevice(), L"Assets/font/myfile.spritefont"));
+		m_bach.reset(new DirectX::SpriteBatch(Engine().GetD3DDeviceContext()));
 		return true;
 	}
 	void Update() override
@@ -258,6 +261,23 @@ public:
 		//シーンの描画が完了したのでG-Bufferを使用してライティングを行って、
 		//メインレンダリングターゲットに描画していく。
 		RenderMainRenderTargetFromGBuffer(rc);
+
+		wchar_t fps[256];
+		swprintf(fps, L"fps %f", 1.0f / Engine().m_sw.GetElapsed());
+		rc.OMSetRenderTargets(1, &Engine().GetMainRenderTarget());
+		m_bach->Begin();
+
+		m_font->DrawString(
+			m_bach.get(),
+			fps,
+			DirectX::XMFLOAT2(0, 0),
+			DirectX::Colors::White,
+			0,
+			DirectX::XMFLOAT2(0, 0),
+			3.0f
+		);
+		m_bach->End();
+
 	}
 };
 

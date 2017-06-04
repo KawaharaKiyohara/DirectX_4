@@ -97,8 +97,9 @@ float4 PSMain( PSIn In ) : SV_Target
 		lightDir = normalize(lightDir);	//³‹K‰»B
 		float3 pointLightColor = saturate(-dot(normal, lightDir)) * pointLightList[i].color.xyz;
 		//Œ¸Š‚ğŒvZ‚·‚éB
-		float3 attn = pointLightList[i].attn.xyz;
-		pointLightColor /= (attn.x + attn.y * len + attn.z * len * len);
+		float	litRate = len / pointLightList[i].attn.x;
+		float	attn = max(1.0 - litRate * litRate, 0.0);
+		pointLightColor *= attn;
 		lig += pointLightColor;
 	
 	}
