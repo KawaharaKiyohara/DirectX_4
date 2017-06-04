@@ -7,8 +7,6 @@
 #include "tkEngine2/graphics/tkCamera.h"
 #include "tkEngine2/timer/tkStopwatch.h"
 #include <time.h>
-
-
 using namespace tkEngine2;
 namespace{
 	const int NUM_POINT_LIGHT = 64;				//ポイントライトの数。
