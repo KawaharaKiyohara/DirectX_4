@@ -9,7 +9,7 @@
 #include <time.h>
 using namespace tkEngine2;
 namespace{
-	const int NUM_POINT_LIGHT = 512;				//ポイントライトの数。
+	const int NUM_POINT_LIGHT = 64;				//ポイントライトの数。
 }
 
 /*!
