@@ -42,10 +42,10 @@ public:
 		skinModelData.Load(L"Assets/modelData/unityChan.cmo");
 		uniModel.Init(skinModelData);
 		//ÉJÉÅÉâÇèâä˙âªÅB
-		camera.SetPosition({ 0.0f, 1.0f, 2.0f });
-		camera.SetTarget({ 0.0f, 1.0f, 0.0f });
+		camera.SetPosition({ 0.0f, 0.7f, 1.5f });
+		camera.SetTarget({ 0.0f, 0.7f, 0.0f });
 		camera.SetUp({ 0.0f, 1.0f, 0.0f });
-		camera.SetNear(1.0f);
+		camera.SetNear(0.1f);
 		camera.Update();
 		
 		return true;
@@ -56,9 +56,18 @@ public:
 	void Update() override
 	{
 		static float angle = 0.0f;
+
 		CQuaternion rot;
 		rot.SetRotation(CVector3::AxisY, angle);
-		angle += 0.01f;
+		if (GetAsyncKeyState(VK_LEFT)) {
+
+			angle += 0.01f;
+		}
+		if (GetAsyncKeyState(VK_RIGHT)) {
+
+			angle -= 0.01f;
+		}
+
 		uniModel.Update({0.0f, 0.0f, 0.0f}, rot, CVector3::One);
 	}
 	/*!------------------------------------------------------------------
@@ -69,7 +78,7 @@ public:
 	void ZPrepass(CRenderContext& rc)
 	{
 		rc.OMSetRenderTargets(1, &depthBuffer);
-		float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f }; //red,green,blue,alpha
+		float ClearColor[4] = { 10000.0f, 10000.0f, 10000.0f, 1.0f }; //red,green,blue,alpha
 		rc.ClearRenderTargetView(0, ClearColor);
 		uniModel.Draw(rc, camera.GetViewMatrix(), camera.GetProjectionMatrix(), true);
 		rc.OMSetRenderTargets(1, NULL);

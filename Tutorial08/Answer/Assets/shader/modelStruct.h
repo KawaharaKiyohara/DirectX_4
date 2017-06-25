@@ -32,8 +32,8 @@ struct PSInput{
 	float4 Position : SV_POSITION;
 	float3 Normal	: NORMAL;
 	float2 TexCoord : TEXCOORD0;
-	float4 Pos		: TEXCOORD1;
-	float3 wPos		: TEXCOORD2;		//ワールド座標。
+	float4 Pos			: TEXCOORD1;
+	float3 posInView	: TEXCOORD2;		//カメラ空間での座標。
 };
 /*!
  * @brief	ピクセルシェーダーの出力。
