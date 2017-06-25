@@ -4,12 +4,9 @@
 
 #include "modelCB.h"
 #include "modelStruct.h"
-
-Texture2D<float4> lightTexture : register(t0);	//光が当たっている箇所のテクスチャ
-sampler Sampler : register(s0);
+#include "modelSRV.h"
 
 
-#define TILE_WIDTH	16		//タイルの幅。
 
 
 /*!--------------------------------------------------------------------------------------
