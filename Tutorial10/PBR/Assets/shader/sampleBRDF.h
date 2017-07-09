@@ -1,9 +1,9 @@
+
 static const float PI = 3.14159265358979323846;
 
 static const float subsurface = 0.0f;
 static const float specular = 0.5f;
 static const float specularTint = 0.0f;
-static const float anisotropic = 0.0f;
 static const float sheen = 0.0f;
 static const float sheenTint = 0.5f;
 static const float clearcoat = 0.0f;

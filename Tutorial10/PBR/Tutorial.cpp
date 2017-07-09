@@ -12,7 +12,8 @@ using namespace tkEngine2;
 
 
 class PBRSample : public IGameObject {
-	
+	//マテリアルパラメータの数。
+	static const int NUM_MATERIAL_PARAM = 3;
 	//頂点。
 	struct SSimpleVertex {
 		CVector4 pos;
@@ -26,12 +27,14 @@ class PBRSample : public IGameObject {
 		CVector4 ambientLight;			//アンビエントライト。
 		CVector4 eyePos;				//視線の位置。
 	};
+	
 	/*!
 	 * @brief	マテリアルパラメータ。
 	 */
 	struct MaterialParam{
 		float roughness;		//!<粗さ
 		float metallic;			//!<メタリック。
+		float anisotropic;		//!<異方性反射。
 	};
 	
 	SLight m_light;								//ライト。
@@ -43,12 +46,11 @@ class PBRSample : public IGameObject {
 	CCamera camera;
 	std::unique_ptr<DirectX::SpriteFont>	m_font;
 	std::unique_ptr<DirectX::SpriteBatch>	m_bach;
+	int m_cursorPos = 0;
 public:
 
 	bool Start() override
 	{
-		
-
 		skinModelData.Load(L"Assets/modelData/background.cmo");
 		bgModel.Init(skinModelData);
 		//カメラを初期化。
@@ -67,6 +69,7 @@ public:
 		//マテリアルパラメータを初期化。
 		m_materialParam.roughness = 0.5f;
 		m_materialParam.metallic = 0.5f;
+		m_materialParam.anisotropic = 0.5f;
 		m_materialParamCB.Create(&m_materialParam, sizeof(m_materialParam));
 			
 		//フォントを初期化。
@@ -78,22 +81,38 @@ public:
 	{
 		bgModel.Update({0.5f, 0.0f, 0.0f}, CQuaternion::Identity, CVector3::One);
 		//マテリアルパラーメータを更新。
+		static bool isPressUPDown = false;
+		if (GetAsyncKeyState(VK_UP)) {
+			if (isPressUPDown == false) {
+				m_cursorPos--;
+				isPressUPDown = true;
+			}
+		}
+		else if (GetAsyncKeyState(VK_DOWN)) {
+			if (isPressUPDown == false) {
+				m_cursorPos++;
+				isPressUPDown = true;
+			}
+		}
+		else {
+			isPressUPDown = false;
+		}
+		m_cursorPos = min(NUM_MATERIAL_PARAM-1, m_cursorPos);
+		m_cursorPos = max(0, m_cursorPos);
+
+		float* params[] = {
+			&m_materialParam.roughness,
+			&m_materialParam.metallic,
+			&m_materialParam.anisotropic
+		};
 		if (GetAsyncKeyState(VK_LEFT)) {
-			m_materialParam.roughness += 0.001f;
+			*params[m_cursorPos] += 0.001f;
 		}
 		else if (GetAsyncKeyState(VK_RIGHT)) {
-			m_materialParam.roughness -= 0.001f;
+			*params[m_cursorPos] -= 0.001f;
 		}
-		if (GetAsyncKeyState('A')) {
-			m_materialParam.metallic += 0.001f;
-		}
-		else if (GetAsyncKeyState('D')) {
-			m_materialParam.metallic -= 0.001f;
-		}
-		m_materialParam.roughness = max(m_materialParam.roughness, 0.0f);
-		m_materialParam.roughness = min(m_materialParam.roughness, 1.0f);
-		m_materialParam.metallic = max(m_materialParam.metallic, 0.0f);
-		m_materialParam.metallic = min(m_materialParam.metallic, 1.0f);
+		*params[m_cursorPos] = max(*params[m_cursorPos], 0.0f);
+		*params[m_cursorPos] = min(*params[m_cursorPos], 1.0f);
 	}
 	/*!------------------------------------------------------------------
 	* @brief	シーンの描画。
@@ -112,7 +131,16 @@ public:
 	void RenderMaterialParam(CRenderContext& rc)
 	{
 		wchar_t fps[256];
-		swprintf(fps, L"roughness %f\nmetallic %f\n", m_materialParam.roughness, m_materialParam.metallic);
+		wchar_t cursor[NUM_MATERIAL_PARAM] = { L' ', L' ', L' ' };
+		cursor[m_cursorPos] = L'>';
+		wchar_t* fomat = L"%croughness %f\n"
+						  "%cmetallic %f\n"
+						  "%canisotropic %f\n";
+		swprintf(fps, fomat, 
+			cursor[0], m_materialParam.roughness, 
+			cursor[1], m_materialParam.metallic,
+			cursor[2], m_materialParam.anisotropic
+		);
 		rc.OMSetRenderTargets(1, &Engine().GetMainRenderTarget());
 		m_bach->Begin();
 
