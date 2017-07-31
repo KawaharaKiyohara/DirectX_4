@@ -69,3 +69,4 @@
 #include "tkEngine2/timer/tkGameTime.h"
 #include "tkEngine2/Input/tkPad.h"
 #include "tkEngine2/tkEngine.h"
+#include "tkEngine2/sound/tkSoundSource.h"
