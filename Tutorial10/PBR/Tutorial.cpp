@@ -81,22 +81,13 @@ public:
 	{
 		bgModel.Update({0.5f, 0.0f, 0.0f}, CQuaternion::Identity, CVector3::One);
 		//マテリアルパラーメータを更新。
-		static bool isPressUPDown = false;
-		if (GetAsyncKeyState(VK_UP)) {
-			if (isPressUPDown == false) {
-				m_cursorPos--;
-				isPressUPDown = true;
-			}
+		if (Pad(0).IsTrigger(enButtonUp)) {
+			m_cursorPos--;
 		}
-		else if (GetAsyncKeyState(VK_DOWN)) {
-			if (isPressUPDown == false) {
-				m_cursorPos++;
-				isPressUPDown = true;
-			}
+		else if (Pad(0).IsTrigger(enButtonDown)) {
+			m_cursorPos++;
 		}
-		else {
-			isPressUPDown = false;
-		}
+		
 		m_cursorPos = min(NUM_MATERIAL_PARAM-1, m_cursorPos);
 		m_cursorPos = max(0, m_cursorPos);
 
@@ -105,10 +96,10 @@ public:
 			&m_materialParam.metallic,
 			&m_materialParam.anisotropic
 		};
-		if (GetAsyncKeyState(VK_LEFT)) {
+		if (Pad(0).IsPress(enButtonLeft)) {
 			*params[m_cursorPos] += 0.001f;
 		}
-		else if (GetAsyncKeyState(VK_RIGHT)) {
+		else if (Pad(0).IsPress(enButtonRight)) {
 			*params[m_cursorPos] -= 0.001f;
 		}
 		*params[m_cursorPos] = max(*params[m_cursorPos], 0.0f);

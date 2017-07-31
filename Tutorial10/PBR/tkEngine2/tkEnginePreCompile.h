@@ -34,7 +34,7 @@
 #include <map>
 #include <wincodec.h>
 #include <wincodecsdk.h>
-
+#include <Xinput.h>
 
 #include "DirectXTK/Inc/Model.h"
 #include "DirectXTK/Inc/Effects.h"	
@@ -62,3 +62,6 @@
 #include "tkEngine2/graphics/tkSamplerState.h"
 #include "tkEngine2/graphics/tkSkinModelData.h"
 #include "tkEngine2/graphics/tkSkinModel.h"
+
+#include "tkEngine2/Input/tkPad.h"
+

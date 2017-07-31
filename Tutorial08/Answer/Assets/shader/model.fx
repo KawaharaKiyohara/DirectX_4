@@ -69,7 +69,6 @@ float4 PSMain( PSInput In ) : SV_Target0
 		float2( 0.0f, 	   +offset.y),		//下
 		float2( offset.x,  +offset.y),		//右下
 	};
-
 	for(int i = 0; i < 8; i++){
 		float2 screenPos2 = screenPos + offsetTbl[i];
 
@@ -79,7 +78,7 @@ float4 PSMain( PSInput In ) : SV_Target0
 			return 0.0f;
 		}
 	}
-
+	
 	//ライトの方向はとりあえず固定にしとく<-ほんとは定数バッファとかで送るべき。
 #ifdef USE_LIM_LIGHT
 	//リムライト用のサンプルではライトはユニティちゃんの真後ろから当たる。
@@ -102,7 +101,7 @@ float4 PSMain( PSInput In ) : SV_Target0
 	//リムを当てる。
 	float3 eyeDir = float3(0.0f, 0.0f, -1.0f);			//視線は固定にしておく(カメラを回したらアウト。ほんとは定数バッファとかで送るべき。
 	float lim = (1.0f - dot(-In.Normal, eyeDir))* 2.0f;	//カメラの方向と垂直な場合逆光の強さが強くなる。
-	lim *= dot(eyeDir, -lightDir);						//完全に逆行していたらbaseLimの値がそのままでる。
+	lim *= max( 0.0f, dot(eyeDir, -lightDir) );						//完全に逆行していたらbaseLimの値がそのままでる。
 	if(lim > 0.7f){
 		//逆光が発生している。
 		color = float4(lightTexture.Sample(Sampler, In.TexCoord).xyz, 1.0f);

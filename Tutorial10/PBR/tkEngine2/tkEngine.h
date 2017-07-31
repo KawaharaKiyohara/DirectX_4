@@ -95,9 +95,21 @@ namespace tkEngine2{
 		{
 			m_currentMainRenderTarget ^= 1;
 		}
+		/*!
+		* @brief	メインレンダリングターゲットの取得。
+		*/
 		CRenderTarget& GetMainRenderTarget()
 		{
 			return m_mainRenderTarget[m_currentMainRenderTarget];
+		}
+		/*!
+		* @brief	ゲームパッドの取得。
+		*@param[in]	padNo	パッド番号
+		*/
+		CPad& GetPad(int padNo)
+		{
+			TK_ASSERT(padNo < CPad::CONNECT_PAD_MAX && padNo >= 0, "padNo is invalid");
+			return m_pad[padNo];
 		}
 	private:
 		/*!
@@ -136,6 +148,7 @@ namespace tkEngine2{
 		int						m_screenHeight = 0;							//!<スクリーンの高さ。
 		int						m_frameBufferWidth = 0;						//!<フレームバッファの幅。これが内部解像度。
 		int						m_frameBufferHeight = 0;					//!<フレームバッファの高さ。これが内部解像度。
+		CPad					m_pad[CPad::CONNECT_PAD_MAX];				//!<ゲームパッド。
 	public:
 		CStopwatch				m_sw;
 	};
@@ -146,5 +159,12 @@ namespace tkEngine2{
 	static inline CEngine& Engine()
 	{
 		return CEngine::GetInstance();
+	}
+	/*!
+	* @brief	CPadのインスタンスを取得。。
+	*/
+	static inline CPad& Pad(int padNo)
+	{
+		return Engine().GetPad(padNo);
 	}
 }

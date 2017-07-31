@@ -196,6 +196,10 @@ namespace tkEngine2 {
 	void CEngine::Update()
 	{
 		m_sw.Start();
+		//ゲームパッドのアップデート。
+		for (auto& pad : m_pad) {
+			pad.Update();
+		}
 		CGameObjectManager& goMgr = GameObjectManager();
 		goMgr.Execute(m_renderContext);
 		//メインレンダリングターゲットの内容をバックバッファにコピー。

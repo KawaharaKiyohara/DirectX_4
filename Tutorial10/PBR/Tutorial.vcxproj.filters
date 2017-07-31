@@ -41,6 +41,9 @@
     <Filter Include="Assets\modelData">
       <UniqueIdentifier>{25bda95f-f45b-4ad1-a6c8-e2804242eac7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tkEngine2\Input">
+      <UniqueIdentifier>{f758351a-839b-45ba-b5d7-f37156317dad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tkEngine2\tkEngine.cpp">
@@ -109,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="tkEngine2\graphics\tkCamera.cpp">
       <Filter>tkEngine2\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\Input\tkPad.cpp">
+      <Filter>tkEngine2\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +204,9 @@
     </ClInclude>
     <ClInclude Include="tkEngine2\graphics\tkCamera.h">
       <Filter>tkEngine2\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\Input\tkPad.h">
+      <Filter>tkEngine2\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
