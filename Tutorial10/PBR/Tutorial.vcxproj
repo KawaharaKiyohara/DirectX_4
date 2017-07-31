@@ -81,14 +81,14 @@
     <GenerateManifest>true</GenerateManifest>
     <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>C:\Program Files %28x86%29\Windows Kits\8.1\Include\um;$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\8.1\Lib\winv6.3\um\x86;$(ProjectDir)/tkEngine2/DirectXTex/Bin/Desktop_2013/Win32/Debug;$(ProjectDir)/tkEngine2/DirectXTK/Bin/Desktop_2015_Win10/Win32/Debug;$(LibraryPath);C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86</LibraryPath>
+    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\8.1\Lib\winv6.3\um\x86;$(ProjectDir)/tkEngine2/DirectXTex/Bin/Desktop_2013/Win32/Debug;$(ProjectDir)/tkEngine2/DirectXTK/Bin/Desktop_2015_Win10/Win32/Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <ExecutablePath>$(DXSDK_DIR)Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
     <IncludePath>C:\Program Files %28x86%29\Windows Kits\8.1\Include\um;$(ProjectDir);C:\Program Files\Autodesk\FBX\FBX SDK\2015.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\8.1\Lib\winv6.3\um\x86;$(ProjectDir)/tkEngine2/DirectXTex/Bin/Desktop_2013/Win32/Release;C:\Program Files\Autodesk\FBX\FBX SDK\2015.1\lib\vs2013\x86\release;$(ProjectDir)/tkEngine2/DirectXTK/Bin/Desktop_2015_Win10/Win32/Release;$(LibraryPath);C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86</LibraryPath>
+    <LibraryPath>C:\Program Files %28x86%29\Windows Kits\8.1\Lib\winv6.3\um\x86;$(ProjectDir)/tkEngine2/DirectXTex/Bin/Desktop_2013/Win32/Release;C:\Program Files\Autodesk\FBX\FBX SDK\2015.1\lib\vs2013\x86\release;$(ProjectDir)/tkEngine2/DirectXTK/Bin/Desktop_2015_Win10/Win32/Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
     <LinkIncremental>true</LinkIncremental>
