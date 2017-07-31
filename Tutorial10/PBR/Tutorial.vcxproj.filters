@@ -44,6 +44,9 @@
     <Filter Include="tkEngine2\Input">
       <UniqueIdentifier>{f758351a-839b-45ba-b5d7-f37156317dad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="tkEngine2\sound">
+      <UniqueIdentifier>{94c6e37c-df44-4322-9fb1-0960d8e5a6e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tkEngine2\tkEngine.cpp">
@@ -115,6 +118,18 @@
     </ClCompile>
     <ClCompile Include="tkEngine2\Input\tkPad.cpp">
       <Filter>tkEngine2\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\Sound\tkSoundSource.cpp">
+      <Filter>tkEngine2\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\Sound\tkWaveFile.cpp">
+      <Filter>tkEngine2\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\Sound\tkWaveFileBank.cpp">
+      <Filter>tkEngine2\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEngine2\Sound\tkSoundEngine.cpp">
+      <Filter>tkEngine2\sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,6 +222,21 @@
     </ClInclude>
     <ClInclude Include="tkEngine2\Input\tkPad.h">
       <Filter>tkEngine2\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\Sound\tkSoundSource.h">
+      <Filter>tkEngine2\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\Sound\tkWaveFile.h">
+      <Filter>tkEngine2\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\Sound\tkWaveFileBank.h">
+      <Filter>tkEngine2\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\Sound\tkSoundEngine.h">
+      <Filter>tkEngine2\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine2\timer\tkGameTime.h">
+      <Filter>tkEngine2\timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

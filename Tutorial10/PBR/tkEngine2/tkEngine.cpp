@@ -27,6 +27,8 @@ namespace tkEngine2 {
 		}
 		//GameObjectManagerの初期化。
 		GameObjectManager().Init(initParam.gameObjectPrioMax);
+		//SoundEngineの初期化
+		m_soundEngine.Init();
 		return true;
 	}
 	bool CEngine::InitWindow( const SInitParam& initParam )
@@ -157,6 +159,7 @@ namespace tkEngine2 {
 	}
 	void CEngine::Final()
 	{
+		m_soundEngine.Release();
 		if( m_pImmediateContext ){
 			m_pImmediateContext->ClearState();
 			m_pImmediateContext = nullptr;
@@ -196,17 +199,30 @@ namespace tkEngine2 {
 	void CEngine::Update()
 	{
 		m_sw.Start();
-		//ゲームパッドのアップデート。
+		//パッドの更新。
 		for (auto& pad : m_pad) {
 			pad.Update();
 		}
-		CGameObjectManager& goMgr = GameObjectManager();
-		goMgr.Execute(m_renderContext);
+		//サウンドエンジンの更新。
+		m_soundEngine.Update();
+		//GameObjectManager更新
+		GameObjectManager().Execute(m_renderContext);
 		//メインレンダリングターゲットの内容をバックバッファにコピー。
 		CopyMainRenderTargetToBackBuffer();
 		
 		m_pSwapChain->Present(0, 0);
 		m_sw.Stop();
+
+		if (m_sw.GetElapsed() < 1.0f / 30.0f) {
+			//30fpsに間に合っているなら眠る。
+			DWORD sleepTime = max(0.0, (1.0 / 30.0)*1000.0 - (DWORD)m_sw.GetElapsedMillisecond());
+			Sleep(sleepTime);
+			GameTime().SetFrameDeltaTime(1.0f / 30.0f);
+		}
+		else {
+			//間に合っていない。
+			GameTime().SetFrameDeltaTime((float)m_sw.GetElapsed());
+		}
 	}
 	LRESULT CALLBACK CEngine::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{

@@ -5,6 +5,8 @@
 
 #include "tkEngine2/graphics/tkRenderTarget.h"
 #include "tkEngine2/timer/tkStopwatch.h"
+#include "tkEngine2/Sound/tkSoundEngine.h"
+
 namespace tkEngine2{
 	/*!
 	 *@brief	初期化用のパラメータ。
@@ -111,6 +113,13 @@ namespace tkEngine2{
 			TK_ASSERT(padNo < CPad::CONNECT_PAD_MAX && padNo >= 0, "padNo is invalid");
 			return m_pad[padNo];
 		}
+		/*!
+		* @brief	サウンドエンジンの取得。
+		*/
+		CSoundEngine& GetSoundEngine()
+		{
+			return m_soundEngine;
+		}
 	private:
 		/*!
 		 *@brief	ウィンドウ初期化。
@@ -143,7 +152,7 @@ namespace tkEngine2{
 		IDXGISwapChain*			m_pSwapChain = nullptr;						//!<SwapChain。
 		int						m_currentMainRenderTarget = 0;				//!<現在のメインレンダリングターゲット。
 		CRenderTarget			m_mainRenderTarget[2];						//!<メインレンダリングターゲット。
-		
+		CSoundEngine			m_soundEngine;								//!<サウンドエンジン。
 		int						m_screenWidth = 0;							//!<スクリーンの幅。
 		int						m_screenHeight = 0;							//!<スクリーンの高さ。
 		int						m_frameBufferWidth = 0;						//!<フレームバッファの幅。これが内部解像度。
@@ -166,5 +175,12 @@ namespace tkEngine2{
 	static inline CPad& Pad(int padNo)
 	{
 		return Engine().GetPad(padNo);
+	}
+	/*!
+	* @brief	CSoundEngineのインスタンスを取得。。
+	*/
+	static inline CSoundEngine& SoundEngine()
+	{
+		return Engine().GetSoundEngine();
 	}
 }
